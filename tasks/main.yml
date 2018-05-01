@@ -1,11 +1,11 @@
 ---
-- name: Install apex dependencies
-  include_tasks: apex-deps.yml
-
 - name: Clone apex repo
   git:
     repo: "{{ apex_repo }}"
     dest: "{{ working_dir }}"
     version: "{{ apex_repo_version }}"
+
+- name: Install apex dependencies
+  include_tasks: apex-deps.yml
 
 

@@ -1,9 +1,9 @@
-- hosts: localhost                                                              
-  connection: local                                                             
-  gather_facts: no                                                              
-                                                                                
-  vars:                                                                         
-    working_dir: "/home/michapma/anet-testing-repo"                             
-                                                                                
-  roles:                                                                        
-    - apex-anet  
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+#  vars:
+#    working_dir: "/home/radez/anet-testing-repo"
+#
+  roles:
+    - apex-anet

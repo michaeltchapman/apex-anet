@@ -25,5 +25,5 @@
   become: yes
 
 - name: run apex dependency check
-  shell: "{{ working_dir }}/apex/contrib/dev_dep_check.sh }}"
+  shell: "{{ working_dir }}/contrib/dev_dep_check.sh }}"
   become: yes
