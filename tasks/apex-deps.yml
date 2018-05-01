@@ -1,0 +1,29 @@
+---
+# Follow the apex integration guide
+- name: install the 'Development tools' package group
+  yum:
+    name: "@Development tools"
+    state: present
+  become: yes
+
+- name: Install epel-release
+  yum:
+    name: epel-release
+    state: present
+  become: yes
+
+- name: Add RDO yum repo
+  yum:
+    name: https://repos.fedorapeople.org/repos/openstack/openstack-pike/rdo-release-pike-1.noarch.rpm
+    state: present
+  become: yes
+
+- name: Add Apex yum repo
+  get_url:
+    url: artifacts.opnfv.org/apex/master/opnfv-apex.repo
+    dest: /etc/yum.repos.d/opnfv-apex.repo
+  become: yes
+
+- name: run apex dependency check
+  shell: "{{ working_dir }}/apex/contrib/dev_dep_check.sh }}"
+  become: yes
