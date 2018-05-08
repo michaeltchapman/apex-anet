@@ -1,0 +1,7 @@
+---
+- name: deploy apex
+  shell: "python3 deploy.py -v -n ../config/network/network_settings.yml -d ../config/deploy/os-nosdn-nofeature-noha.yaml --deploy-dir ../build --lib-dir ../lib --image-dir ../.build
+  args:
+    chdir: "{{ working_dir }}/apex/apex"
+  environment:
+    PYTHONPATH: "{{ working_dir }}/apex:$PYTHONPATH"

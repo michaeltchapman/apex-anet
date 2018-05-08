@@ -10,9 +10,15 @@
     path: "{{ working_dir }}/apex-cache"
     state: directory
 
+- name: Check if there's already an image available
+  stat:
+    path: "{{ working_dir }}/apex/.build/overcloud-full.qcow2"
+  register: image_stat
+
 - name: build apex images
   shell: "python3 build.py -c {{ working_dir }}/apex-cache -r dev1"
   args:
     chdir: "{{ working_dir }}/apex/apex"
   environment:
     PYTHONPATH: "{{ working_dir }}/apex:$PYTHONPATH"
+  when: image_stat.stat.exists == False or force_image_build == True
