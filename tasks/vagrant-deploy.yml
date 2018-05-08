@@ -1,0 +1,14 @@
+---
+- name: Deploy virtual switch using vagrant
+  shell: "vagrant up vqfxpfe"
+  args:
+    chdir: "{{ working_dir }}/apex"
+  # Virtual switches do not come up cleanly
+  ignore_errors: false
+
+- name: Deploy virtual routing engine using vagrant
+  shell: "vagrant up junos"
+  args:
+    chdir: "{{ working_dir }}/apex"
+  # Virtual switches do not come up cleanly
+  ignore_errors: false
