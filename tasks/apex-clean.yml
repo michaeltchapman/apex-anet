@@ -1,0 +1,6 @@
+- name: clean apex
+  shell: "python3 clean.py"
+  args:
+    chdir: "{{ working_dir }}/apex/apex"
+  environment:
+    PYTHONPATH: "{{ working_dir }}/apex:$PYTHONPATH"

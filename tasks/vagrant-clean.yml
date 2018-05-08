@@ -1,0 +1,4 @@
+- name: clean vagrant
+  shell: "vagrant destroy -f"
+  args:
+    chdir: "{{ working_dir }}/apex"
