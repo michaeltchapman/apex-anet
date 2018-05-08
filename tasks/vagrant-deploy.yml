@@ -1,4 +1,11 @@
 ---
+# Normally this is created by apex, but the vagrant boxes need
+# to connect to it as well, so it needs to be there before we
+# vagrant up
+- openvswitch_bridge:
+    bridge: 'br-admin'
+    state: present
+
 - name: Deploy virtual switch using vagrant
   shell: "vagrant up vqfx-pfe"
   args:
