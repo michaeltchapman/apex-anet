@@ -11,6 +11,9 @@
 - name: Build apex images
   include_tasks: apex-build.yml
 
-- name: Deploy apex
-  include_tasks: apex-deploy.yml
+- name: Install vagrant dependencies
+  include_tasks: vagrant-deps.yml
+
+#- name: Deploy apex
+#  include_tasks: apex-deploy.yml
 

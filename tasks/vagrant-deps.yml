@@ -1,0 +1,73 @@
+---
+- name: Install vagrant
+  yum:
+    name: https://releases.hashicorp.com/vagrant/2.1.1/vagrant_2.1.1_x86_64.rpm
+    state: present
+  become: yes
+
+- name: Install vagrant-libvirt dependencies
+  yum: name={{item}} state=installed
+  with_items:
+       - qemu
+       - libvirt
+       - libvirt-devel
+       - ruby-devel
+       - gcc
+       - qemu-kvm
+       - libxslt-devel
+       - libxml2-devel
+       - libvirt-devel
+       - libguestfs-tools-c
+
+- name: Check vagrant-libvirt is installed
+  command: "vagrant plugin list | grep vagrant-libvirt"
+  register: vagrant_libvirt
+
+- name: Install vagrant-libvirt
+  command: "vagrant plugin install vagrant-libvirt"
+  when: vagrant_libvirt.rc != 0
+
+- name: make vagrant image directory
+  file:
+    path: "{{ working_dir }}/vagrant-boxes"
+    state: directory
+
+- name: Check if junos box already loaded
+  command: "vagrant box list | grep junos"
+  register: vagrant_junos_box
+
+- name: Check if vqfx10k-pfe box already loaded
+  command: "vagrant box list | grep vqfx10k-pfe"
+  register: vagrant_vqfxpfe_box
+
+- name: Check if there's already a vqfx10-pfe image available
+  stat:
+    path: "{{ working_dir }}/vagrant-boxes/vqfx10k-pfe.box"
+  register: vqfxpfe
+  when: vagrant_junos_box.rc != 0
+
+- name: Check if there's already a junos image available
+  stat:
+    path: "{{ working_dir }}/vagrant-boxes/junos.box"
+  register: vqfxpfe
+  when: vagrant_vqfxpfe_box.rc != 0
+
+- name: Download junos box
+  get_url:
+    url: "{{ vagrant_box_source }}/junos.box"
+    dest: "{{ working_dir }}/vagrant-boxes/junos.box"
+  when: vagrant_junos_box.rc != 0 and junos.stat.exists == False
+
+- name: Download vqfx10k-pfe box
+  get_url:
+    url: "{{ vagrant_box_source }}/vqfx10k-pfe.box"
+    dest: "{{ working_dir }}/vagrant-boxes/vqfx10k-pfe.box"
+  when: vagrant_vqfxpfe_box.rc != 0 and vqfxpfe.stat.exists == False
+
+- name: Add Junos box
+  command: "vagrant box add {{ working_dir }}/vagrant-boxes/junos.box --name junos"
+  when: vagrant_junos_box.rc != 0
+
+- name: Add vqfx10k-pfe box
+  command: "vagrant box add {{ working_dir }}/vagrant-boxes/vqfx10k-pfe.box --name vqfx10k-pfe"
+  when: vagrant_vqfxpfe_box.rc != 0
