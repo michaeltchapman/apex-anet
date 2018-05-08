@@ -24,6 +24,7 @@
     dest: /etc/yum.repos.d/opnfv-apex.repo
   become: yes
 
+# todo convert this to ansible
 - name: run apex dependency check
   shell: "{{ working_dir }}/contrib/dev_dep_check.sh }}"
   become: yes
