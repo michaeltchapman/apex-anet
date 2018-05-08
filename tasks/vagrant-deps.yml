@@ -20,7 +20,7 @@
        - libguestfs-tools-c
 
 - name: Check vagrant-libvirt is installed
-  command: "vagrant plugin list | grep vagrant-libvirt"
+  shell: "vagrant plugin list | grep vagrant-libvirt"
   register: vagrant_libvirt
 
 - name: Install vagrant-libvirt
