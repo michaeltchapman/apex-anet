@@ -1,6 +1,6 @@
 ---
 - name: Deploy virtual switch using vagrant
-  shell: "vagrant up vqfxpfe"
+  shell: "vagrant up vqfx-pfe"
   args:
     chdir: "{{ working_dir }}/apex"
   # Virtual switches do not come up cleanly
