@@ -1,0 +1,10 @@
+---
+- name: copy custom controller nic configuration to tmp
+  copy:
+    src: controller.yaml
+    dest: "/tmp/controller.yaml"
+
+- name: Add custom controller nic to undercloud image
+  shell: "virt-customize -a {{ working_dir }}/apex/.build/undercloud.qcow2 --mkdir /home/stack/nics --copy-in /tmp/controller.yaml:/home/stack/nics --run-command 'chown -R stack /home/stack/nics'"
+  environment:
+    LIBGUESTFS_BACKEND: direct
