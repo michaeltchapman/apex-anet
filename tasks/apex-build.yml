@@ -2,7 +2,7 @@
 - name: clean apex directory
   shell: "make clean"
   args:
-    chdir: "{{ working_dir }}/build"
+    chdir: "{{ working_dir }}apex/build"
   when: clean_images
 
 - name: make apex cache directory
