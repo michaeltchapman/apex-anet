@@ -5,5 +5,5 @@ clean_images: false
 force_image_build: false
 vagrant_box_source: "http://10.8.125.119/vagrant"
 
-clean_apex_vms: true
-clean_vagrant_vms: true
+clean_apex_vms: false
+clean_vagrant_vms: false

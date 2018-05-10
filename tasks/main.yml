@@ -28,6 +28,9 @@
 - name: Deploy virtual switches
   include_tasks: vagrant-deploy.yml
 
-#- name: Deploy apex
-#  include_tasks: apex-deploy.yml
+- name: Deploy apex
+  include_tasks: apex-deploy.yml
+
+- name: Perform post-deploy config
+  include_tasks: apex-post-deploy.yml
 
