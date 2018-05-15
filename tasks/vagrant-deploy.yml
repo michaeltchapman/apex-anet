@@ -18,8 +18,14 @@
     chdir: "{{ working_dir }}/apex"
   ignore_errors: true
 
-- name: Confgure RE
+- name: Confgure RE (part 1)
   expect:
     command: vagrant ssh vqfx
     responses: "{{ vqfx_expect_responses }}"
+    timeout: 300
+
+- name: Confgure RE (part 2)
+  expect:
+    command: vagrant ssh vqfx
+    responses: "{{ vqfx_expect_responses2 }}"
     timeout: 300

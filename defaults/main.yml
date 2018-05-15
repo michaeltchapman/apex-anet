@@ -10,21 +10,26 @@ clean_vagrant_vms: false
 
 vqfx_expect_responses:
   'Password:': 'Juniper'
-  'root@:RE:0%': 'cli'
-  'root>': 'config'
-  'root#':
+  '.*root.*':
+    - 'cli'
+    - 'config'
     - 'set interfaces em1 unit 0 family inet address 169.254.0.2/24'
     - 'commit'
     - 'exit'
-  'root>':
+    - 'exit'
+    - 'exit'
     - 'restart chassis-control'
     - 'exit'
+
+vqfx_expect_responses2:
+  'Password:': 'Juniper'
   'root@:RE:0%': 'sh'
-  '#' : 'while [ ! $(ifconfig | grep xe-0) ] ; do sleep 1 ; done ;'
-  '#' : 'exit'
-  'root@:RE:0%': 'cli'
-  'root>' : 'config'
-  'root#' :
+  '#':
+    - 'while [ ! $(ifconfig | grep xe-0) ] ; do sleep 1 ; done ;'
+    - 'exit'
+  '.*root.*':
+    - 'cli'
+    - 'config'
     - 'set vlans br-tenant vlan-id 37'
     - 'set interfaces interface-range br-tenant member-range xe-0/0/0 to xe-0/0/1'
     - 'set interfaces interface-range br-tenant unit 0 family ethernet-switching vlan members br-tenant'
@@ -36,5 +41,8 @@ vqfx_expect_responses:
     - 'delete interfaces interface-range br-tenant unit 0 family ethernet-switching vlan members br-tenant'
     - 'set interfaces interface-range br-tenant unit 0 family ethernet-switching interface-mode trunk'
     - 'set interfaces interface-range br-tenant unit 0 family ethernet-switching vlan members br-tenant'
-  'root#' : 'commit'
-  'root#' : 'exit'
+    - 'commit'
+    - 'exit'
+    - 'exit'
+    - 'exit'
+    - 'exit'
