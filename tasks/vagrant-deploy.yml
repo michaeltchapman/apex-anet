@@ -16,4 +16,10 @@
   shell: "vagrant up vqfx"
   args:
     chdir: "{{ working_dir }}/apex"
-  ignore_errors: true 
+  ignore_errors: true
+
+- name: Confgure RE
+  expect:
+    command: vagrant ssh vqfx
+    responses: "{{ vqfx_expect_responses }}"
+    timeout: 300
