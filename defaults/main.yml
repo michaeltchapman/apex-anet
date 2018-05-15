@@ -7,7 +7,7 @@ vagrant_box_source: "http://10.8.125.119/vagrant"
 
 clean_apex_vms: false
 clean_vagrant_vms: false
----
+
 vqfx_expect_responses:
   'Password:': 'Juniper'
   'root@:RE:0%': 'cli'
@@ -24,7 +24,7 @@ vqfx_expect_responses:
   '#' : 'exit'
   'root@:RE:0%': 'cli'
   'root>' : 'config'
-  'root#'
+  'root#' :
     - 'set vlans br-tenant vlan-id 37'
     - 'set interfaces interface-range br-tenant member-range xe-0/0/0 to xe-0/0/1'
     - 'set interfaces interface-range br-tenant unit 0 family ethernet-switching vlan members br-tenant'
