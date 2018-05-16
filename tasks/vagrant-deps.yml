@@ -18,7 +18,11 @@
        - libxml2-devel
        - libvirt-devel
        - libguestfs-tools-c
-       - pexpect
+
+# expect ansible requires a newer version
+- name: Install pexpect from pip
+  pip:
+    name: pexpect
 
 - name: Check vagrant-libvirt is installed
   shell: "vagrant plugin list | grep vagrant-libvirt"
