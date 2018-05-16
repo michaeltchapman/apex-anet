@@ -23,9 +23,11 @@
     command: vagrant ssh vqfx
     responses: "{{ vqfx_expect_responses }}"
     timeout: 300
+    chdir: "{{ working_dir }}/apex"
 
 - name: Confgure RE (part 2)
   expect:
     command: vagrant ssh vqfx
     responses: "{{ vqfx_expect_responses2 }}"
     timeout: 300
+    chdir: "{{ working_dir }}/apex"
