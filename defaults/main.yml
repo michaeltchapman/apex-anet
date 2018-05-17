@@ -33,10 +33,12 @@ vqfx_expect_responses2:
     - 'set vlans br-tenant vlan-id 37'
     - 'set interfaces interface-range br-tenant member-range xe-0/0/0 to xe-0/0/1'
     - 'set interfaces interface-range br-tenant unit 0 family ethernet-switching vlan members br-tenant'
-    - 'set interfaces interface-range br-ctlplane member-range xe-0/0/2 to xe-0/0/4'
-    - 'set interfaces interface-range br-ctlplane unit 0 family ethernet-switching vlan members default'
+    - 'set interfaces xe-0/0/2 unit 0 family ethernet-switching vlan members default'
+    - 'set interfaces xe-0/0/3 unit 0 family ethernet-switching vlan members default'
+    - 'set interfaces xe-0/0/4 unit 0 family ethernet-switching vlan members default'
     - 'set interfaces xe-0/0/5 unit 0 family ethernet-switching vlan members default'
-      # to setup trunk mode on a port
+    - 'set interfaces xe-0/0/6 unit 0 family ethernet-switching vlan members default'
+# to setup trunk mode on a port
     - 'set interfaces interface-range br-tenant native-vlan-id 37'
     - 'delete interfaces interface-range br-tenant unit 0 family ethernet-switching vlan members br-tenant'
     - 'set interfaces interface-range br-tenant unit 0 family ethernet-switching interface-mode trunk'
