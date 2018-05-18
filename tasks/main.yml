@@ -23,7 +23,7 @@
 
 - name: Clean Vagrant VMs
   include_tasks: vagrant-clean.yml
-  when: vagrant_apex_vms
+  when: clean_vagrant_vms
 
 - name: Deploy virtual switches
   include_tasks: vagrant-deploy.yml

@@ -6,17 +6,33 @@
     bridge: 'br-admin'
     state: present
 
+- name: Find virtual switch
+  shell: "vagrant status vqfx-pfe | grep running"
+  args:
+    chdir: "{{ working_dir }}/apex"
+  ignore_errors: true
+  register: pfe_status
+
 - name: Deploy virtual switch using vagrant
   shell: "vagrant up vqfx-pfe"
   args:
     chdir: "{{ working_dir }}/apex"
   ignore_errors: true
+  when: pfe_status.rc == 0
+
+- name: Find virtual routing engine
+  shell: "vagrant status vqfx | grep running"
+  args:
+    chdir: "{{ working_dir }}/apex"
+  ignore_errors: true
+  register: re_status
 
 - name: Deploy virtual routing engine using vagrant
   shell: "vagrant up vqfx"
   args:
     chdir: "{{ working_dir }}/apex"
   ignore_errors: true
+  when: re_status.rc == 0
 
 - name: Confgure RE (part 1)
   expect:
