@@ -12,6 +12,7 @@
 - openvswitch_bridge:
     bridge: 'br-admin'
     state: present
+  become: yes
 
 - name: Find virtual switch
   shell: "vagrant status vqfx-pfe | grep running"
