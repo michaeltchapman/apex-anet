@@ -1,10 +1,18 @@
 ---
+
+- name: Start openvswitch services
+  systemd:
+    name: openvswitch
+    state: started
+  become: yes
+
 # Normally this is created by apex, but the vagrant boxes need
 # to connect to it as well, so it needs to be there before we
 # vagrant up
 - openvswitch_bridge:
     bridge: 'br-admin'
     state: present
+  become: yes
 
 - name: Find virtual switch
   shell: "vagrant status vqfx-pfe | grep running"

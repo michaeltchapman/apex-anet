@@ -20,11 +20,19 @@
 
 - name: Add Apex yum repo
   get_url:
-    url: artifacts.opnfv.org/apex/master/opnfv-apex.repo
+    url: https://artifacts.opnfv.org/apex/master/opnfv-apex.repo
     dest: /etc/yum.repos.d/opnfv-apex.repo
+  validate_certs: no
   become: yes
 
 # todo convert this to ansible
 - name: run apex dependency check
   shell: "{{ working_dir }}/apex/contrib/dev_dep_check.sh }}"
+  become: yes
+
+- name: install apex requirements
+  pip:
+     state: present
+     requirements: "{{ working_dir }}/apex/requirements.txt"
+     executable: pip3
   become: yes
