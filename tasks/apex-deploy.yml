@@ -1,7 +1,7 @@
 ---
 # if there's already an undercloud running, don't redeploy
 - name: find running undercloud
-  command: "virsh list | grep undercloud"
+  shell: "virsh list | grep undercloud"
   register: undercloud_presence
 
 - name: deploy apex
