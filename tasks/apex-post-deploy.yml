@@ -6,6 +6,7 @@
 # register the undercloud as a new node in the inventory
 - name: add undercloud to inventory
   add_host:
-    hostname: "{{ undercloud_ip.stdout }}"
+    name: undercloud
+    ansible_host: "{{ undercloud_ip.stdout }}"
     groups: undercloud
 
