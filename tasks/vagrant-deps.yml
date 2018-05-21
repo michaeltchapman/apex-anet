@@ -28,6 +28,7 @@
 - name: Check vagrant-libvirt is installed
   shell: "vagrant plugin list | grep vagrant-libvirt"
   register: vagrant_libvirt
+  ignore_errors: true
 
 - name: Install vagrant-libvirt
   command: "vagrant plugin install vagrant-libvirt"
