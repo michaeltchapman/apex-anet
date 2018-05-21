@@ -9,6 +9,7 @@
   shell: "python3 deploy.py -v -n ../config/network/network_settings.yaml -d ../config/deploy/os-nosdn-nofeature-noha.yaml --deploy-dir ../build --lib-dir ../lib --image-dir ../.build"
   args:
     chdir: "{{ working_dir }}/apex/apex"
+  become: yes
   environment:
     PYTHONPATH: "{{ working_dir }}/apex:$PYTHONPATH"
   when: undercloud_presence.rc != 0
