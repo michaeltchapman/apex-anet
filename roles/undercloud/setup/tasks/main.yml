@@ -1,0 +1,13 @@
+---
+
+- name: get overcloud controllers
+  shell: source /root/stackrc && nova list | grep controller | cut -d '=' -f 2 | cut -d ' ' -f 1
+  register: controller_list
+
+- name: register controllers
+  add_host:
+    hostname: "{{ item }}"
+    ansible_user: heat-admin
+    groups: overcloud_controllers
+    ansible_ssh_common_args: "-J stack@{{ hostvars['localhost']['undercloud_ip']['stdout'] }}"
+  with_items: "{{ controller_list.stdout_lines }}"

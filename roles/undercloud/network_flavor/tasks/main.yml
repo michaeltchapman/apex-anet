@@ -1,0 +1,19 @@
+#5. Provisioning Network and Flavor Configuration
+## Provisioning/cleaning Network Configuration
+#openstack network create --provider-network-type flat --provider-physical-network provisioning provisioning
+#openstack subnet create --network provisioning --subnet-range 192.0.2.0/24 --gateway 192.0.2.1 --allocation-pool start=192.0.2.100,end=192.0.2.200 provisioning-subnet
+#
+## Provisioning flavor configuration
+#openstack flavor create --ram 1024 --disk 20 --vcpus 1 baremetal
+#openstack flavor set baremetal --property "capabilities:profile"="baremetal" --property capabilities:boot_option="local"
+##openstack flavor set baremetal --property resources:CUSTOM_BAREMETAL=1
+#openstack flavor set baremetal --property resources:VCPU=1
+#openstack flavor set baremetal --property resources:MEMORY_MB=0
+#openstack flavor set baremetal --property resources:DISK_GB=0
+#openstack aggregate create --property baremetal=true baremetal-hosts
+#openstack aggregate create --property baremetal=false virtual-hosts
+#openstack flavor set baremetal --property baremetal=true
+#openstack flavor create --ram 1024 --disk 20 --vcpus 1 virtual
+#openstack flavor set virtual --property baremetal=false
+
+

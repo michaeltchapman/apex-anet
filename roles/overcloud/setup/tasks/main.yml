@@ -1,0 +1,70 @@
+---
+
+- name: Configure overcloud controller for networking-ansible
+  debug:
+    msg: Configure overcloud controller for networking-ansible
+
+#Once deployed make sure the neutron configs are updated to define that mapping:
+#
+#plugin.ini:
+#tenant_network_types=vxlan,vlan
+#network_vlan_ranges=datacentre:500:525,provisioning:600:625
+#flat_networks=datacentre,provisioning
+#
+#plugins/ml2/openvswitch_agent.ini:
+#bridge_mappings=datacentre:br-ex,provisioning:br-ctlplane
+#
+#service neutron-server restart
+#service neutron-openvswitch-agent restart
+#
+#
+## Install Ansible runner and networking-ansible
+#sudo -i
+#yum update ansible-2.5.2
+#yum update python2-ncclient-0.4.7
+#cd ~
+#git clone https://github.com/ansible/ansible-runner
+#cd ansible-runner
+## vim ansible_runner/runner.py (not sure when this needs to be done)
+#+            #ignore_sighup=True,
+#+            #encoding='utf-8',
+#+            #echo=False,
+#python setup.py install
+#cd ~
+#git clone https://github.com/openstack/networking-ansible
+#cd networking-ansible
+#python setup.py install
+#
+#
+#----- /etc/neutron/plugin.ini -----
+#
+#[ml2]
+#...
+#mechanism_drivers = ansible
+#type_drivers=local,vlan,flat
+#tenant_network_types = vlan
+#[ml2_type_vlan]
+#network_vlan_ranges=datacentre:500:525,tenant:300:399
+#[ml2_type_flat]
+#flat_networks=datacentre,provisioning
+#
+#
+#[ml2_ansible]
+#[ansible:testhost]
+#ansible_network_os=junos
+#ansible_connection=netconf
+#ansible_host=192.0.2.250
+#ansible_user=ansible
+#ansible_ssh_pass=Juniper
+#
+#----- /usr/lib/python2.7/site-packages/neutron-*-py2.7.egg-info/entry_points.txt -----
+#[neutron.ml2.mechanism_drivers]
+#ansible = networking_ansible.ml2.mech_driver:AnsibleMechanismDriver
+#
+#-----  /etc/neutron/plugins/ml2/openvswitch_agent.ini -----
+#bridge_mappings=datacentre:br-ex,provisioning:br-ctlplane,tenant:br-tenant
+#
+#
+#service neutron-server restart
+#service neutron-openvswitch-agent restart
+

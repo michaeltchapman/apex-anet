@@ -1,0 +1,21 @@
+# 7. Add the new VM as a node to ironic
+#### do this on the undercloud
+#source overcloudrc
+#openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.initramfs bm-deploy-ramdisk
+#openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.kernel bm-deploy-kernel
+#openstack baremetal node create --name baremetal3 --driver ipmi \
+#     --driver-info ipmi_address=192.168.122.1 \
+#     --driver-info ipmi_port=6232 \
+#     --driver-info ipmi_username=admin \
+#     --driver-info ipmi_password=password \
+#     --driver-info deploy_kernel=bm-deploy-kernel \
+#     --driver-info deploy_ramdisk=bm-deploy-ramdisk
+#openstack baremetal port create 52:54:00:24:ec:61 --node 5dd9c525-d7b7-4985-9c93-000c42751a0c \
+#    --local-link-connection switch_id=00:00:00:00:00:00 \
+#    --local-link-connection switch_info=testhost \
+#    --local-link-connection port_id=xe-0/0/5
+#
+#openstack baremetal node manage baremetal3 --wait
+#openstack baremetal node provide baremetal3
+
+

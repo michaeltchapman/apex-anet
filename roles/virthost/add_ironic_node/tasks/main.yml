@@ -1,0 +1,16 @@
+# 6 Add a new VM that will be deployed by Ironic
+#### do this on the hypervisor
+#virsh dumpxml baremetal0 > baremetal3
+#• edit baremetal 3, strip out identifiers, change storage, update first nic to attach to the external ovs bridge and the second nic to attach to the switch-appliance
+#cp /home/images/baremetal0.qcow2 /home/images/baremetal3.qcow2
+#virsh define baremetal3
+#vbmc list
+#vbmc add baremetal3 --port 6232  --username admin --password password --address 192.168.122.1
+#vbmc start baremetal3
+## allow the vbcm port through the firewall
+#iptables -I INPUT -p udp --dport 6232 -j ACCEPT
+## https://docs.openstack.org/tripleo-docs/latest/install/environments/virtualbmc.html
+#### do this on the controller
+## On the controller to give it a route to the hypervisor to control the VM nodes
+#ip r a 192.168.122.0/24 via 192.0.2.1
+
