@@ -26,7 +26,7 @@
   args:
     chdir: "{{ working_dir }}/apex"
   ignore_errors: true
-  when: pfe_status.rc == 0
+  when: pfe_status.rc == 1
 
 - name: Find virtual routing engine
   shell: "vagrant status vqfx | grep running"
@@ -40,7 +40,7 @@
   args:
     chdir: "{{ working_dir }}/apex"
   ignore_errors: true
-  when: re_status.rc == 0
+  when: re_status.rc == 1
 
 - name: Confgure RE (part 1)
   expect:
