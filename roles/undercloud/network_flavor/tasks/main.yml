@@ -3,57 +3,57 @@
 # Provisioning/cleaning Network Configuration
 #openstack network create --provider-network-type flat --provider-physical-network provisioning provisioning
 - name: create provisioning network
-  command: source /root/stackrc && openstack network create --provider-network-type flat --provider-physical-network provisioning provisioning
+  shell: source /root/stackrc && openstack network create --provider-network-type flat --provider-physical-network provisioning provisioning
   become: true
 
 #openstack subnet create --network provisioning --subnet-range 192.0.2.0/24 --gateway 192.0.2.1 --allocation-pool start=192.0.2.100,end=192.0.2.200 provisioning-subnet
 - name: create provisioning subnet
-  command: source /root/stackrc && openstack subnet create --network provisioning --subnet-range 192.0.2.0/24 --gateway 192.0.2.1 --allocation-pool start=192.0.2.100,end=192.0.2.200 provisioning-subnet
+  shell: source /root/stackrc && openstack subnet create --network provisioning --subnet-range 192.0.2.0/24 --gateway 192.0.2.1 --allocation-pool start=192.0.2.100,end=192.0.2.200 provisioning-subnet
   become: true
 #
 ## Provisioning flavor configuration
 #openstack flavor create --ram 1024 --disk 20 --vcpus 1 baremetal
 - name: create flavor
-  command: source /root/stackrc && openstack flavor create --ram 1024 --disk 20 --vcpus 1 baremetal
+  shell: source /root/stackrc && openstack flavor create --ram 1024 --disk 20 --vcpus 1 baremetal
   become: true
 #openstack flavor set baremetal --property "capabilities:profile"="baremetal" --property capabilities:boot_option="local"
 - name: set flavor profile
-  command: source /root/stackrc && openstack flavor set baremetal --property "capabilities:profile"="baremetal" --property capabilities:boot_option="local"
+  shell: source /root/stackrc && openstack flavor set baremetal --property "capabilities:profile"="baremetal" --property capabilities:boot_option="local"
   become: true
 ##openstack flavor set baremetal --property resources:CUSTOM_BAREMETAL=1
 - name: set flavor CUSTOM_BAREMETAL
-  command: source /root/stackrc && openstack flavor set baremetal --property resources:CUSTOM_BAREMETAL=1
+  shell: source /root/stackrc && openstack flavor set baremetal --property resources:CUSTOM_BAREMETAL=1
   become: true
 #openstack flavor set  VCPU
 - name: set flavot vcpu
-  command: source /root/stackrc && openstack flavor set baremetal --property resources:VCPU=1
+  shell: source /root/stackrc && openstack flavor set baremetal --property resources:VCPU=1
   become: true
 #openstack flavor set baremetal --property resources:MEMORY_MB=0
 - name: set flavor memory
-  command: source /root/stackrc && openstack flavor set baremetal --property resources:MEMORY_MB=0
+  shell: source /root/stackrc && openstack flavor set baremetal --property resources:MEMORY_MB=0
   become: true
 #openstack flavor set baremetal --property resources:DISK_GB=0
 - name: set flavor disk gb
-  command: source /root/stackrc && openstack flavor set baremetal --property resources:DISK_GB=0
+  shell: source /root/stackrc && openstack flavor set baremetal --property resources:DISK_GB=0
   become: true
 #openstack aggregate create --property baremetal=true baremetal-hosts
 - name: create baremetal host aggregate
-  command: source /root/stackrc && openstack aggregate create --property baremetal=true baremetal-hosts
+  shell: source /root/stackrc && openstack aggregate create --property baremetal=true baremetal-hosts
   become: true
 #openstack aggregate create --property baremetal=false virtual-hosts
 - name: create virtual host aggregate
-  command: source /root/stackrc && openstack aggregate create --property baremetal=false virtual-hosts
+  shell: source /root/stackrc && openstack aggregate create --property baremetal=false virtual-hosts
   become: true
 #openstack flavor set baremetal --property baremetal=true
 - name: set betametal property in flavor
-  command: source /root/stackrc && openstack flavor set baremetal --property baremetal=true
+  shell: source /root/stackrc && openstack flavor set baremetal --property baremetal=true
   become: true
 #openstack flavor create --ram 1024 --disk 20 --vcpus 1 virtual
 - name: create virtual flavor
-  command: source /root/stackrc && openstack flavor create --ram 1024 --disk 20 --vcpus 1 virtual
+  shell: source /root/stackrc && openstack flavor create --ram 1024 --disk 20 --vcpus 1 virtual
   become: true
 #openstack flavor set virtual --property baremetal=false
 - name: set virtual flavor to baremetal false
-  command: source /root/stackrc && openstack flavor set virtual --property baremetal=false
+  shell: source /root/stackrc && openstack flavor set virtual --property baremetal=false
   become: true
 
