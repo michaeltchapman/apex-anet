@@ -4,8 +4,8 @@
   vars:
     working_dir: "/home/anet-working-dir"
     apex_repo: "https://github.com/michaeltchapman/apex"
-    clean_vagrant_vms: true
-    clean_apex_vms: true
+    #clean_vagrant_vms: true
+    #clean_apex_vms: true
 
   # build images, boot virtual switches and deploy apex
   roles:
