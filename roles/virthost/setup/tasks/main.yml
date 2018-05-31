@@ -8,6 +8,10 @@
 - name: Install apex dependencies
   include_tasks: apex-deps.yml
 
+- name: Clean Vagrant VMs
+  include_tasks: vagrant-clean.yml
+  when: clean_vagrant_vms
+
 - name: Clean Apex VMs
   include_tasks: apex-clean.yml
   when: clean_apex_vms
@@ -20,10 +24,6 @@
 
 - name: Install vagrant dependencies
   include_tasks: vagrant-deps.yml
-
-- name: Clean Vagrant VMs
-  include_tasks: vagrant-clean.yml
-  when: clean_vagrant_vms
 
 - name: Deploy virtual switches
   include_tasks: vagrant-deploy.yml

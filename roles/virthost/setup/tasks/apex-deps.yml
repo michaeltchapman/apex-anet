@@ -20,7 +20,7 @@
 
 - name: Add Apex yum repo
   get_url:
-    url: https://artifacts.opnfv.org/apex/master/opnfv-apex.repo
+    url: http://artifacts.opnfv.org/apex/master/opnfv-apex.repo
     dest: /etc/yum.repos.d/opnfv-apex.repo
   validate_certs: no
   become: yes

@@ -1,40 +1,43 @@
 - hosts: localhost
   connection: local
   gather_facts: no
-#  vars:
-#    working_dir: "/home/radez/anet-testing-repo"
-#
+  vars:
+    working_dir: "/home/anet-working-dir"
+    apex_repo: "https://github.com/michaeltchapman/apex"
+    clean_vagrant_vms: true
+    clean_apex_vms: true
+
   # build images, boot virtual switches and deploy apex
   roles:
-    - apex-anet/virthost/setup
+    - virthost/setup
 
   # register the overcloud via the undercloud
 - hosts: undercloud 
   roles:
-    - apex-anet/undercloud/setup
+    - undercloud/setup
 
   # configure overcloud controllers for networking-ansible
 - hosts: overcloud_controllers 
   roles:
-    - apex-anet/overcloud/setup
+    - overcloud/setup
 
   # provision network and configure flavors
 - hosts: undercloud
   roles:
-    - apex-anet/undercloud/network_flavor
+    - undercloud/network_flavor
  
   # create new baremetal node
 - hosts: localhost 
   connection: local
   roles:
-    - apex-anet/virthost/add_ironic_node
+    - virthost/add_ironic_node
  
   # add new baremetal node to overcloud ironic
 - hosts: undercloud 
   roles:
-    - apex-anet/undercloud/add_ironic_node
+    - undercloud/add_ironic_node
  
   # deploy to new baremetal node
 - hosts: undercloud 
   roles:
-    - apex-anet/undercloud/deploy_ironic_node
+    - undercloud/deploy_ironic_node

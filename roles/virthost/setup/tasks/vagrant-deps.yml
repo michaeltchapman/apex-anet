@@ -40,11 +40,11 @@
     state: directory
 
 - name: Check if junos box already loaded
-  command: "vagrant box list | grep junos"
+  shell: "vagrant box list | grep junos"
   register: vagrant_junos_box
 
 - name: Check if vqfx10k-pfe box already loaded
-  command: "vagrant box list | grep vqfx10k-pfe"
+  shell: "vagrant box list | grep vqfx10k-pfe"
   register: vagrant_vqfxpfe_box
 
 - name: Check if there's already a vqfx10-pfe image available
