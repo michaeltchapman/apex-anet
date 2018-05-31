@@ -1,16 +1,48 @@
+---
 # 6 Add a new VM that will be deployed by Ironic
 #### do this on the hypervisor
 #virsh dumpxml baremetal0 > baremetal3
 #• edit baremetal 3, strip out identifiers, change storage, update first nic to attach to the external ovs bridge and the second nic to attach to the switch-appliance
 #cp /home/images/baremetal0.qcow2 /home/images/baremetal3.qcow2
+
+# TODO replace with qemu-image create for a blank disk
+- name: Copy baremetal image to ironic_bm.qcow2
+  command: cp /var/lib/libvirt/images/baremetal0.qcow2 /var/lib/libvirt/images/ironic_bm.qcow2
+  become: true
+
+- name: Create ironic_bm definition
+  copy:
+    src: ironic_bm
+    dest: /tmp/ironic_bm
+  become: true
+
 #virsh define baremetal3
+- name: Define ironic_bm in libvirt
+  command: virsh define /tmp/ironic_bm
+  become: true
+
 #vbmc list
 #vbmc add baremetal3 --port 6232  --username admin --password password --address 192.168.122.1
+- name: Add ironic_bm to vbmc
+  command: vbmc add ironic_bm --port 6232  --username admin --password password --address 192.168.122.1
+  become: true
+
 #vbmc start baremetal3
-## allow the vbcm port through the firewall
+- name: Start ironic_bm vbmc service
+  command: vbmc start ironic_bm
+  become: true
+
+# allow the vbcm port through the firewall
 #iptables -I INPUT -p udp --dport 6232 -j ACCEPT
-## https://docs.openstack.org/tripleo-docs/latest/install/environments/virtualbmc.html
-#### do this on the controller
-## On the controller to give it a route to the hypervisor to control the VM nodes
+# https://docs.openstack.org/tripleo-docs/latest/install/environments/virtualbmc.html
+- name: Allow vbmc through firewall
+  command: iptables -I INPUT -p udp --dport 6232 -j ACCEPT
+  become: true
+
+### do this on the controller
+# On the controller to give it a route to the hypervisor to control the VM nodes
 #ip r a 192.168.122.0/24 via 192.0.2.1
+- name: Give controller a route to the hyervisor
+  command: ip r a 192.168.122.0/24 via 192.0.2.1
+  become: true
 
