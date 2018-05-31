@@ -4,36 +4,13 @@
   debug:
     msg: Configure overcloud controller for networking-ansible
 
+
 #Once deployed make sure the neutron configs are updated to define that mapping:
 #
 #plugin.ini:
 #tenant_network_types=vxlan,vlan
 #network_vlan_ranges=datacentre:500:525,provisioning:600:625
 #flat_networks=datacentre,provisioning
-#
-#plugins/ml2/openvswitch_agent.ini:
-#bridge_mappings=datacentre:br-ex,provisioning:br-ctlplane
-#
-#service neutron-server restart
-#service neutron-openvswitch-agent restart
-#
-#
-## Install Ansible runner and networking-ansible
-#sudo -i
-#yum update ansible-2.5.2
-#yum update python2-ncclient-0.4.7
-#cd ~
-#git clone https://github.com/ansible/ansible-runner
-#cd ansible-runner
-## vim ansible_runner/runner.py (not sure when this needs to be done)
-#+            #ignore_sighup=True,
-#+            #encoding='utf-8',
-#+            #echo=False,
-#python setup.py install
-#cd ~
-#git clone https://github.com/openstack/networking-ansible
-#cd networking-ansible
-#python setup.py install
 #
 #
 #----- /etc/neutron/plugin.ini -----
@@ -43,28 +20,148 @@
 #mechanism_drivers = ansible
 #type_drivers=local,vlan,flat
 #tenant_network_types = vlan
+
+- name: set neutron mechanism_drivers
+  command: crudini --set /etc/neutron/plugin.ini  ml2 mechanism_drivers anslble
+  become: true
+- name: set neutron tenant_network_types
+  command: crudini --set /etc/neutron/plugin.ini ml2 tenant_network_types vxlan,vlan
+  become: true
+- name: set neutron type_drivers
+  command: crudini --set /etc/neutron/plugin.ini ml2 type_drivers local,vlan,flat
+  become: true
+
 #[ml2_type_vlan]
 #network_vlan_ranges=datacentre:500:525,tenant:300:399
+- name: set neutron network_vlan_ranges
+  command: crudini --set /etc/neutron/plugin.ini ml2_type_vlan network_vlan_ranges datacentre:500:525,provisioning:600:625
+  become: true
+
 #[ml2_type_flat]
 #flat_networks=datacentre,provisioning
+- name: set neutron flat_networks
+  command: crudini --set /etc/neutron/plugin.ini  ml2_type_flat flat_networks datacentre,provisioning
+  become: true
 #
 #
 #[ml2_ansible]
 #[ansible:testhost]
+
 #ansible_network_os=junos
+- name: set ansible_network_os
+  command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_network junos
+  become: true
 #ansible_connection=netconf
+- name: set ansible_connection
+  command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_connection netconf
+  become: true
 #ansible_host=192.0.2.250
+- name: set ansible_host
+  command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_host 192.0.2.250
+  become: true
 #ansible_user=ansible
+- name: set ansible_user
+  command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_user ansible
+  become: true
 #ansible_ssh_pass=Juniper
+- name: set ansible_ssh_pass
+  command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_ssh_pass Juniper
+  become: true
+
+# crudini doesn't support subsections, so set line above ansible:testhost to the section
+- lineinfile:
+    path: /etc/neutron/plugin.ini
+    insertbefore: '^\[ansible:testhost\]'
+    regexp: '^\[ml2_ansible\]'
+    line: '[ml2_ansible]'
 #
 #----- /usr/lib/python2.7/site-packages/neutron-*-py2.7.egg-info/entry_points.txt -----
 #[neutron.ml2.mechanism_drivers]
 #ansible = networking_ansible.ml2.mech_driver:AnsibleMechanismDriver
 #
+- name: get entry point paths
+  shell: "ls /usr/lib/python2.7/site-packages | grep \"neutron.*py2.7.*\""
+  register: ep
+
+- name: set entry point lines
+  command: "crudini --set /usr/lib/python2.7/site-packages/{{ item }}/entry_points.txt neutron.ml2.mechanism_drivers ansible networking_ansible.ml2.mech_driver:AnsibleMechanismDriver"
+  with_items: "{{ ep.stdout_lines }}"
+
 #-----  /etc/neutron/plugins/ml2/openvswitch_agent.ini -----
 #bridge_mappings=datacentre:br-ex,provisioning:br-ctlplane,tenant:br-tenant
-#
+- name: set ovs agent bridge_mappings
+  command: crudini --set /etc/neutron/plugins/ml2/openvswitch_agent.ini ovs bridge_mappings datacentre:br-ex,provisioning:br-ctlplane,tenant:br-tenant
+  become: true
 #
 #service neutron-server restart
+- name: restart neutron server
+  command: systemctl restart neutron-server
+  become: true
 #service neutron-openvswitch-agent restart
+- name: restart neutron server
+  command: systemctl restart neutron-openvswitch-agent
+  become: true
+#
+#
+## Install Ansible runner and networking-ansible
+#sudo -i
+#yum update ansible-2.5.2
+- name: ansible package
+  yum:
+    name: ansible-2.5.2
+    state: present
+  become: true
 
+#yum update python2-ncclient-0.4.7
+- name: ncclient package
+  yum:
+    name: python2-ncclient-0.4.7
+    state: present
+  become: true
+
+#cd ~
+#git clone https://github.com/ansible/ansible-runner
+- name: clone ansible runner
+  git:
+    repo: https://github.com/ansible/ansible-runner
+    dest: /root/ansible-runner
+  become: true
+
+#cd ansible-runner
+## vim ansible_runner/runner.py (not sure when this needs to be done)
+#+            #ignore_sighup=True,
+#+            #encoding='utf-8',
+#+            #echo=False,
+- name: fetch ansible-runner patch
+  command: git fetch https://github.com/michaeltchapman/ansible-runner
+  args:
+    chdir: /root/ansible-runner
+  become: true
+
+- name: cherry-pick ansible-runner patch
+  command: git cherry-pick 21315e6
+  args:
+    chdir: /root/ansible-runner
+  become: true
+
+#use pip to install python packages cleanly
+- name: ncclient package
+  yum:
+    name: python-pip
+    state: present
+  become: true
+
+#python setup.py install
+- name: install ansible runner
+  pip:
+    name: git+file:///root/ansible-runner
+  become: true
+
+#cd ~
+#git clone https://github.com/openstack/networking-ansible
+#cd networking-ansible
+#python setup.py install
+- name: install networking ansible
+  pip:
+    name: git+https://github.com/openstack/networking-ansible
+  become: true
