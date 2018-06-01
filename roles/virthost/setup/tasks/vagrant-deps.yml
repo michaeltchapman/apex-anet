@@ -42,10 +42,12 @@
 - name: Check if junos box already loaded
   shell: "vagrant box list | grep junos"
   register: vagrant_junos_box
+  ignore_errors: true
 
 - name: Check if vqfx10k-pfe box already loaded
   shell: "vagrant box list | grep vqfx10k-pfe"
   register: vagrant_vqfxpfe_box
+  ignore_errors: true
 
 - name: Check if there's already a vqfx10-pfe image available
   stat:
