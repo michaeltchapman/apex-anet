@@ -13,6 +13,7 @@
        - libvirt-devel
        - ruby-devel
        - gcc
+       - expect 
        - qemu-kvm
        - libxslt-devel
        - libxml2-devel
