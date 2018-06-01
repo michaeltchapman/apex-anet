@@ -58,7 +58,7 @@
 - name: Check if there's already a junos image available
   stat:
     path: "{{ working_dir }}/vagrant-boxes/junos.box"
-  register: vqfxpfe
+  register: junos 
   when: vagrant_vqfxpfe_box.rc != 0
 
 - name: Download junos box
