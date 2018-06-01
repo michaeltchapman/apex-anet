@@ -1,8 +1,21 @@
+---
 # 7. Add the new VM as a node to ironic
 #### do this on the undercloud
 #source overcloudrc
 #openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.initramfs bm-deploy-ramdisk
+- name: create ramdisk
+  shell: source /home/stack/overcloudrc && openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.initramfs bm-deploy-ramdisk
+  args:
+    chdir: /home/stack
+  become: true
+
 #openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.kernel bm-deploy-kernel
+- name: create kernel
+  shell: source /home/stack/overcloudrc && openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.kernel bm-deploy-kernel
+  args:
+    chdir: /home/stack
+  become: true
+
 #openstack baremetal node create --name baremetal3 --driver ipmi \
 #     --driver-info ipmi_address=192.168.122.1 \
 #     --driver-info ipmi_port=6232 \
@@ -10,12 +23,27 @@
 #     --driver-info ipmi_password=password \
 #     --driver-info deploy_kernel=bm-deploy-kernel \
 #     --driver-info deploy_ramdisk=bm-deploy-ramdisk
+- name: create baremetal node
+  shell: source /home/stack/overcloudrc && openstack baremetal node create --name ironic_bm --driver ipmi --driver-info ipmi_address=192.168.122.1 --driver-info ipmi_port=6232 --driver-info ipmi_username=admin --driver-info ipmi_password=password --driver-info deploy_kernel=bm-deploy-kernel --driver-info deploy_ramdisk=bm-deploy-ramdisk | grep ' uuid ' | cut -d '|' -f 3 | tr -d '[:space:]'
+  become: true
+  register: ironic_bm_uuid
+
+
 #openstack baremetal port create 52:54:00:24:ec:61 --node 5dd9c525-d7b7-4985-9c93-000c42751a0c \
 #    --local-link-connection switch_id=00:00:00:00:00:00 \
 #    --local-link-connection switch_info=testhost \
 #    --local-link-connection port_id=xe-0/0/5
-#
+- name: create baremetal port
+  shell: "source /home/stack/overcloudrc && openstack baremetal port create {{ hostvars['localhost']['ironic_bm_mac']['stdout'] }} --node {{ ironic_bm_uuid.stdout }} --local-link-connection switch_id=00:00:00:00:00:00 --local-link-connection switch_info=testhost --local-link-connection port_id=xe-0/0/5"
+  become: true
+
 #openstack baremetal node manage baremetal3 --wait
+- name: manage ironic_bm
+  shell: source /home/stack/overcloudrc && openstack baremetal node manage ironic_bm --wait
+  become: true
+
 #openstack baremetal node provide baremetal3
+- name: provide ironic_bm
+  shell: source /home/stack/overcloudrc && openstack baremetal node provide ironic_bm
 
 

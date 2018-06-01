@@ -21,6 +21,11 @@
   command: virsh define /tmp/ironic_bm
   become: true
 
+- name: Get ironic_bm mac address
+  shell: virsh domiflist ironic_bm | grep udp | tr -s ' ' '\012' | grep ':'
+  become: true
+  register: ironic_bm_mac
+
 #vbmc list
 #vbmc add baremetal3 --port 6232  --username admin --password password --address 192.168.122.1
 - name: Add ironic_bm to vbmc
