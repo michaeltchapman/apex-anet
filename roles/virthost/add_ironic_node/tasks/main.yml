@@ -16,26 +16,53 @@
     dest: /tmp/ironic_bm
   become: true
 
+- name: check for ironic_vm presence
+  shell: virsh list --all | grep ironic_vm
+  become: true
+  register: ironic_vm_define
+  ignore_errors: true
+
 #virsh define baremetal3
 - name: Define ironic_bm in libvirt
   command: virsh define /tmp/ironic_bm
   become: true
+  when: ironic_vm_define.rc != 0
 
+# needed for port creation later
 - name: Get ironic_bm mac address
   shell: virsh domiflist ironic_bm | grep udp | tr -s ' ' '\012' | grep ':'
   become: true
   register: ironic_bm_mac
 
-#vbmc list
-#vbmc add baremetal3 --port 6232  --username admin --password password --address 192.168.122.1
+- name: check for ironic_vbmc presence
+  shell: vbmc list | grep ironic_vm
+  become: true
+  register: ironic_vbmc
+  ignore_errors: true
+
 - name: Add ironic_bm to vbmc
   command: vbmc add ironic_bm --port 6232  --username admin --password password --address 192.168.122.1
   become: true
+  when: ironic_vbmc.rc != 0
+
+- name: check for ironic_vbmc status
+  shell: vbmc list | grep ironic_vm | grep running
+  become: true
+  register: ironic_vbmc_status
+  ignore_errors: true
 
 #vbmc start baremetal3
 - name: Start ironic_bm vbmc service
   command: vbmc start ironic_bm
   become: true
+  when: ironic_vbmc_status.rc != 0
+
+
+- name: check for ironic_vbmc iptables port access
+  shell: iptables -L | grep 6232
+  become: true
+  register: ironic_vbmc_iptables
+  ignore_errors: true
 
 # allow the vbcm port through the firewall
 #iptables -I INPUT -p udp --dport 6232 -j ACCEPT
@@ -43,11 +70,14 @@
 - name: Allow vbmc through firewall
   command: iptables -I INPUT -p udp --dport 6232 -j ACCEPT
   become: true
+  when: ironic_vbmc_iptables.rc != 0
 
 ### do this on the controller
 # On the controller to give it a route to the hypervisor to control the VM nodes
 #ip r a 192.168.122.0/24 via 192.0.2.1
+#(michchap) I can see that route but via 192.168.122.1 on the 119 box
 - name: Give controller a route to the hyervisor
   command: ip r a 192.168.122.0/24 via 192.0.2.1
   become: true
+  ignore_errors: true
 

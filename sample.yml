@@ -10,6 +10,8 @@
   # build images, boot virtual switches and deploy apex
   roles:
     - virthost/setup
+    # start from here if re-using an existing deployment
+    - virthost/post-deploy
 
   # register the overcloud via the undercloud
 - hosts: undercloud 

@@ -74,6 +74,7 @@
     insertbefore: '^\[ansible:testhost\]'
     regexp: '^\[ml2_ansible\]'
     line: '[ml2_ansible]'
+  become: true
 #
 #----- /usr/lib/python2.7/site-packages/neutron-*-py2.7.egg-info/entry_points.txt -----
 #[neutron.ml2.mechanism_drivers]
@@ -86,6 +87,7 @@
 - name: set entry point lines
   command: "crudini --set /usr/lib/python2.7/site-packages/{{ item }}/entry_points.txt neutron.ml2.mechanism_drivers ansible networking_ansible.ml2.mech_driver:AnsibleMechanismDriver"
   with_items: "{{ ep.stdout_lines }}"
+  become: true
 
 #-----  /etc/neutron/plugins/ml2/openvswitch_agent.ini -----
 #bridge_mappings=datacentre:br-ex,provisioning:br-ctlplane,tenant:br-tenant

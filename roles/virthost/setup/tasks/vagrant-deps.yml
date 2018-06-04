@@ -13,7 +13,7 @@
        - libvirt-devel
        - ruby-devel
        - gcc
-       - expect 
+       - expect
        - qemu-kvm
        - libxslt-devel
        - libxml2-devel
@@ -59,7 +59,7 @@
 - name: Check if there's already a junos image available
   stat:
     path: "{{ working_dir }}/vagrant-boxes/junos.box"
-  register: junos 
+  register: junos
   when: vagrant_vqfxpfe_box.rc != 0
 
 - name: Download junos box
@@ -81,3 +81,21 @@
 - name: Add vqfx10k-pfe box
   command: "vagrant box add {{ working_dir }}/vagrant-boxes/vqfx10k-pfe.box --name vqfx10k-pfe"
   when: vagrant_vqfxpfe_box.rc != 0
+
+- shell: cat /sys/module/kvm_intel/parameters/nested || true
+  register: nested_result
+
+- name: reload kvm_intel
+  block:
+    - lineinfile:
+        path: /etc/modprobe.d/kvm_intel.conf
+        line: 'options kvm-intel nested=1'
+        create: yes
+    - modprobe:
+        name: kvm_intel
+        state: absent
+    - modprobe:
+        name: kvm_intel
+        state: present
+  when:
+    - "'Y' not in nested_result.stdout"

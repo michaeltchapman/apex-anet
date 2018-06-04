@@ -31,6 +31,7 @@
 - name: Deploy apex
   include_tasks: apex-deploy.yml
 
-- name: Perform post-deploy config
-  include_tasks: apex-post-deploy.yml
+# moved to its own role for shortcutting setup
+#- name: Perform post-deploy config
+#  include_tasks: apex-post-deploy.yml
 
