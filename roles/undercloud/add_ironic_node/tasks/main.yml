@@ -3,10 +3,25 @@
 #### do this on the undercloud
 #source overcloudrc
 #openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.initramfs bm-deploy-ramdisk
+
+- name: find ramdisk
+  shell: source /home/stack/overcloudrc && openstack image list | grep bm-deploy-ramdisk
+  ignore_errors: true
+  register: bm_ramdisk
+  become: true
+
 - name: create ramdisk
   shell: source /home/stack/overcloudrc && openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.initramfs bm-deploy-ramdisk
   args:
     chdir: /home/stack
+  become: true
+  when: bm_ramdisk.rc != 0
+
+
+- name: find kernel
+  shell: source /home/stack/overcloudrc && openstack image list | grep bm-deploy-kernel
+  ignore_errors: true
+  register: bm_kernel
   become: true
 
 #openstack image create --public --disk-format qcow2 --container-format bare --file ironic-python-agent.kernel bm-deploy-kernel
@@ -15,6 +30,7 @@
   args:
     chdir: /home/stack
   become: true
+  when: bm_kernel.rc != 0
 
 #openstack baremetal node create --name baremetal3 --driver ipmi \
 #     --driver-info ipmi_address=192.168.122.1 \
@@ -23,27 +39,55 @@
 #     --driver-info ipmi_password=password \
 #     --driver-info deploy_kernel=bm-deploy-kernel \
 #     --driver-info deploy_ramdisk=bm-deploy-ramdisk
+
+- name: find baremetal node list
+  shell: source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm | cut -d '|' -f 2 | tr -d '[:space:]'
+  ignore_errors: true
+  register: ironic_bm_uuid
+  become: true
+
 - name: create baremetal node
   shell: source /home/stack/overcloudrc && openstack baremetal node create --name ironic_bm --driver ipmi --driver-info ipmi_address=192.168.122.1 --driver-info ipmi_port=6232 --driver-info ipmi_username=admin --driver-info ipmi_password=password --driver-info deploy_kernel=bm-deploy-kernel --driver-info deploy_ramdisk=bm-deploy-ramdisk | grep ' uuid ' | cut -d '|' -f 3 | tr -d '[:space:]'
   become: true
   register: ironic_bm_uuid
 
-
 #openstack baremetal port create 52:54:00:24:ec:61 --node 5dd9c525-d7b7-4985-9c93-000c42751a0c \
 #    --local-link-connection switch_id=00:00:00:00:00:00 \
 #    --local-link-connection switch_info=testhost \
 #    --local-link-connection port_id=xe-0/0/5
+
+- name: find baremetal port
+  shell: "source /home/stack/overcloudrc && openstack baremetal port list | grep {{ ironic_bm_uuid  }}"
+  register: ironic_bm_port
+  become: true
+  ignore_errors: true
+
 - name: create baremetal port
   shell: "source /home/stack/overcloudrc && openstack baremetal port create {{ hostvars['localhost']['ironic_bm_mac']['stdout'] }} --node {{ ironic_bm_uuid.stdout }} --local-link-connection switch_id=00:00:00:00:00:00 --local-link-connection switch_info=testhost --local-link-connection port_id=xe-0/0/5"
   become: true
+  when: ironic_bm_port.rc != 0
+
+- name: manage ironic node
+  shell: "source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm | grep enroll"
+  register: ironic_bm_manage
+  become: true
+  ignore_errors: true
 
 #openstack baremetal node manage baremetal3 --wait
 - name: manage ironic_bm
   shell: source /home/stack/overcloudrc && openstack baremetal node manage ironic_bm --wait
   become: true
+  when: ironic_bm_manage.rc == 0
+
+- name: manage ironic node
+  shell: "source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm | grep manageable"
+  register: ironic_bm_provide
+  become: true
+  ignore_errors: true
 
 #openstack baremetal node provide baremetal3
 - name: provide ironic_bm
   shell: source /home/stack/overcloudrc && openstack baremetal node provide ironic_bm
+  when: ironic_bm_provide.rc == 0
 
 
