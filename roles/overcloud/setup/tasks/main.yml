@@ -22,10 +22,10 @@
 #tenant_network_types = vlan
 
 - name: set neutron mechanism_drivers
-  command: crudini --set /etc/neutron/plugin.ini  ml2 mechanism_drivers anslble
+  command: crudini --set /etc/neutron/plugin.ini  ml2 mechanism_drivers ansible
   become: true
 - name: set neutron tenant_network_types
-  command: crudini --set /etc/neutron/plugin.ini ml2 tenant_network_types vxlan,vlan
+  command: crudini --set /etc/neutron/plugin.ini ml2 tenant_network_types vlan
   become: true
 - name: set neutron type_drivers
   command: crudini --set /etc/neutron/plugin.ini ml2 type_drivers local,vlan,flat
@@ -134,17 +134,25 @@
 #+            #ignore_sighup=True,
 #+            #encoding='utf-8',
 #+            #echo=False,
+
+- name: check for ansible-networking patch
+  command: git branch --contains 21315e6
+  ignore_errors: true
+  register: anet_patch
+
 - name: fetch ansible-runner patch
   command: git fetch https://github.com/michaeltchapman/ansible-runner
   args:
     chdir: /root/ansible-runner
   become: true
+  when: anet_patch.rc != 0
 
 - name: cherry-pick ansible-runner patch
   command: git cherry-pick 21315e6
   args:
     chdir: /root/ansible-runner
   become: true
+  when: anet_patch.rc != 0
 
 #use pip to install python packages cleanly
 - name: ncclient package
