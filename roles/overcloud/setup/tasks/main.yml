@@ -94,16 +94,7 @@
 - name: set ovs agent bridge_mappings
   command: crudini --set /etc/neutron/plugins/ml2/openvswitch_agent.ini ovs bridge_mappings datacentre:br-ex,provisioning:br-ctlplane,tenant:br-tenant
   become: true
-#
-#service neutron-server restart
-- name: restart neutron server
-  command: systemctl restart neutron-server
-  become: true
-#service neutron-openvswitch-agent restart
-- name: restart neutron server
-  command: systemctl restart neutron-openvswitch-agent
-  become: true
-#
+
 #
 ## Install Ansible runner and networking-ansible
 #sudo -i
@@ -174,4 +165,13 @@
 - name: install networking ansible
   pip:
     name: git+https://github.com/openstack/networking-ansible
+  become: true
+
+#service neutron-server restart
+- name: restart neutron server
+  command: systemctl restart neutron-server
+  become: true
+#service neutron-openvswitch-agent restart
+- name: restart neutron ovs agent
+  command: systemctl restart neutron-openvswitch-agent
   become: true
