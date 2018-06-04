@@ -2,9 +2,22 @@
 # 8. Deploy the ironic node
 ## Tenant Network configuration
 
+- name: find default router
+  shell:  source /home/stack/overcloudrc && openstack router list | grep default-router
+  ignore_errors: true
+  become: true
+  register: default_router
+
 #openstack router create default-router
 - name: create router
   shell: source /home/stack/overcloudrc && openstack router create default-router
+  when: default_router.rc != 0
+
+- name: find default router provisioning subnet
+  shell:  source /home/stack/overcloudrc && openstack subnet list | grep default-router
+  ignore_errors: true
+  become: true
+  register: default_router
 
 #openstack router add subnet default-router provisioning-subnet
 - name: add provisioning subnet to router
