@@ -155,17 +155,25 @@
 
 #python setup.py install
 - name: install ansible runner
-  pip:
-    name: git+file:///root/ansible-runner
+  shell: python setup.py install
+  args:
+    chdir: /root/ansible-runner
   become: true
 
 #cd ~
 #git clone https://github.com/openstack/networking-ansible
 #cd networking-ansible
 #python setup.py install
+- name: clone networking ansible
+  git:
+    repo: https://github.com/openstack/networking-ansible
+    dest: /root/networking-ansible
+  become: true
+
 - name: install networking ansible
-  pip:
-    name: git+https://github.com/openstack/networking-ansible
+  shell: python setup.py install
+  chdir:
+    args: /root/networking-ansible
   become: true
 
 #service neutron-server restart
