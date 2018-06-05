@@ -155,7 +155,7 @@
 
 #python setup.py install
 - name: install ansible runner
-  shell: python setup.py install
+  command: python setup.py install
   args:
     chdir: /root/ansible-runner
   become: true
@@ -171,7 +171,7 @@
   become: true
 
 - name: install networking ansible
-  shell: python setup.py install
+  command: python setup.py install
   chdir:
     args: /root/networking-ansible
   become: true
