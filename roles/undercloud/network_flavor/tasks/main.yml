@@ -87,7 +87,7 @@
 - name: create virtual host aggregate
   shell: source /home/stack/overcloudrc && openstack aggregate create --property baremetal=false virtual-hosts
   become: true
-  when: vrutual_aggregate.rc != 0
+  when: virtual_aggregate.rc != 0
 
 #openstack flavor set baremetal --property baremetal=true
 - name: set baremetal property in flavor
