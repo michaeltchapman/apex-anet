@@ -10,4 +10,11 @@
     ansible_user: heat-admin
     groups: overcloud_controllers
     ansible_ssh_common_args: "-J stack@{{ hostvars['localhost']['undercloud_ip']['stdout'] }}"
+    #ansible_ssh_common_args: "-t stack@{{ hostvars['localhost']['undercloud_ip']['stdout'] }}"
   with_items: "{{ controller_list.stdout_lines }}"
+
+- name: add virthost pubkey to controllers
+  shell: "ssh-copy-id /home/stack/id_rsa_virthost.pub -o StrictHostKeyChecking=no heat-admin@{{ item }}"
+  become: true
+  with_items: "{{ controller_list.stdout_lines }}"
+  

@@ -83,7 +83,7 @@
 - name: get entry point paths
   shell: "ls /usr/lib/python2.7/site-packages | grep \"neutron.*py2.7.*\""
   register: ep
-  beomce: true
+  become: true
 
 - name: set entry point lines
   command: "crudini --set /usr/lib/python2.7/site-packages/{{ item }}/entry_points.txt neutron.ml2.mechanism_drivers ansible networking_ansible.ml2.mech_driver:AnsibleMechanismDriver"
