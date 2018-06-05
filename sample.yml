@@ -18,6 +18,9 @@
   roles:
     - undercloud/setup
 
+    # If there is no overcloud, redeploy it
+    - undercloud/deploy_overcloud
+
   # configure overcloud controllers for networking-ansible
 - hosts: overcloud_controllers 
   roles:

@@ -1,0 +1,11 @@
+---
+- name: check for overcloud presence
+  shell: source /root/stackrc && openstack stack list | grep ovecloud
+  ignore_errors: true
+  register: overcloud_exists
+  become: true
+
+- name: deploy overcloud
+  shell: cd /home/stack && source /home/stack/stackrc && bash deploy_command
+  when: overcloud_exists.rc != 0
+  become: true
