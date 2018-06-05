@@ -155,9 +155,7 @@
 
 #python setup.py install
 - name: install ansible runner
-  command: python setup.py install
-  args:
-    chdir: /root/ansible-runner
+  shell: cd /root/ansible-runner && python setup.py install
   become: true
 
 #cd ~
@@ -171,9 +169,7 @@
   become: true
 
 - name: install networking ansible
-  command: python setup.py install
-  chdir:
-    args: /root/networking-ansible
+  shell: cd /root/networking-ansible && python setup.py install
   become: true
 
 #service neutron-server restart
