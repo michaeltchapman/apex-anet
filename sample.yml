@@ -13,13 +13,13 @@
     # start from here if re-using an existing deployment
     - virthost/post-deploy
 
-  # register the overcloud via the undercloud
 - hosts: undercloud 
   roles:
-    - undercloud/setup
-
     # If there is no overcloud, redeploy it
     - undercloud/deploy_overcloud
+
+    # Register overcloud to inventory
+    - undercloud/setup
 
   # configure overcloud controllers for networking-ansible
 - hosts: overcloud_controllers 
