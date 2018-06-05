@@ -35,7 +35,7 @@
   register: ironic_bm_mac
 
 - name: check for ironic_vbmc presence
-  shell: vbmc list | grep ironic_vm
+  shell: vbmc list | grep ironic_bm
   become: true
   register: ironic_vbmc
   ignore_errors: true
@@ -46,7 +46,7 @@
   when: ironic_vbmc.rc != 0
 
 - name: check for ironic_vbmc status
-  shell: vbmc list | grep ironic_vm | grep running
+  shell: vbmc list | grep ironic_bm | grep running
   become: true
   register: ironic_vbmc_status
   ignore_errors: true
