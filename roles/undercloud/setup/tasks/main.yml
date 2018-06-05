@@ -13,8 +13,15 @@
     #ansible_ssh_common_args: "-t stack@{{ hostvars['localhost']['undercloud_ip']['stdout'] }}"
   with_items: "{{ controller_list.stdout_lines }}"
 
+- name: copy ssh pub key to undercloud
+  copy:
+    src: /root/.ssh/id_rsa.pub
+    dest: /home/stack/.ssh/id_rsa_virthost.pub
+    owner: stack
+    group: stack
+    mode: 0600
+
 - name: add virthost pubkey to controllers
-  shell: "ssh-copy-id /home/stack/id_rsa_virthost.pub -o StrictHostKeyChecking=no heat-admin@{{ item }}"
+  shell: "cat /home/stack/.ssh/id_rsa_virthost.pub | ssh -T -i /home/stack/.ssh/id_rsa -o StrictHostKeyChecking=no -o GlobalKnownHostsFile=/dev/null -o UserKnownHostsFile=/dev/null -o LogLevel=error heat-admin@{{ item }} 'cat >> ~/.ssh/authorized_keys'"
   become: true
   with_items: "{{ controller_list.stdout_lines }}"
-  

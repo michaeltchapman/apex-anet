@@ -17,7 +17,7 @@
   become: true
 
 - name: check for ironic_vm presence
-  shell: virsh list --all | grep ironic_vm
+  shell: virsh list --all | grep ironic_bm
   become: true
   register: ironic_vm_define
   ignore_errors: true

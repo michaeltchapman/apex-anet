@@ -9,10 +9,3 @@
     name: undercloud
     ansible_host: "{{ undercloud_ip.stdout }}"
     groups: undercloud
-
-- name: copy ssh pub key to undercloud
-  copy:
-    src: /root/.ssh/id_rsa.pub
-    dest: /home/stack/.ssh/id_rsa_virthost.pub
-    owner: stack
-    group: stack
