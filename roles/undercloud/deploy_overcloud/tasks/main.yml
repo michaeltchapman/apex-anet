@@ -1,6 +1,6 @@
 ---
 - name: check for overcloud presence
-  shell: source /root/stackrc && openstack stack list | grep ovecloud
+  shell: source /root/stackrc && openstack stack list | grep overcloud
   ignore_errors: true
   register: overcloud_exists
   become: true
