@@ -63,7 +63,7 @@
 #    --local-link-connection port_id=xe-0/0/5
 
 - name: find baremetal port
-  shell: "source /home/stack/overcloudrc && openstack baremetal port list | grep {{ ironic_bm_uuid  }}"
+  shell: "source /home/stack/overcloudrc && openstack baremetal port list | grep {{ ironic_bm_uuid.stdout }}"
   register: ironic_bm_port
   become: true
   ignore_errors: true
