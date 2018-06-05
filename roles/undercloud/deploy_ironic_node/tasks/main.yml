@@ -13,40 +13,73 @@
   shell: source /home/stack/overcloudrc && openstack router create default-router
   when: default_router.rc != 0
 
-- name: find default router provisioning subnet
-  shell:  source /home/stack/overcloudrc && openstack subnet list | grep default-router
-  ignore_errors: true
-  become: true
-  register: default_router
-
 #openstack router add subnet default-router provisioning-subnet
 - name: add provisioning subnet to router
   shell: source /home/stack/overcloudrc && openstack router add subnet default-router provisioning-subnet
+  when: default_router.rc != 0
+
+
+- name: find tenant network
+  shell:  source /home/stack/overcloudrc && openstack network list | grep tenant-net
+  ignore_errors: true
+  become: true
+  register: tenant_net
 
 #openstack network create --provider-network-type vlan --provider-physical-network tenant tenant-net
 - name: create tenant network
   shell: source /home/stack/overcloudrc && openstack network create --provider-network-type vlan --provider-physical-network tenant tenant-net
+  when: tenant_net.rc != 0
+
+- name: find tenant subnet
+  shell:  source /home/stack/overcloudrc && openstack subnet list | grep tenant-subnet
+  ignore_errors: true
+  become: true
+  register: tenant_subnet
 
 #openstack subnet create --network tenant-net --subnet-range 192.0.3.0/24     --allocation-pool start=192.0.3.10,end=192.0.3.20 tenant-subnet
-- name: create tenant network
+- name: create tenant subnet
   shell: source /home/stack/overcloudrc && openstack subnet create --network tenant-net --subnet-range 192.0.3.0/24     --allocation-pool start=192.0.3.10,end=192.0.3.20 tenant-subnet
+  when: tenant_subnet.rc != 0
 
 #openstack router add subnet default-router tenant-subnet
 - name: add tenant subnet to router
   shell: source /home/stack/overcloudrc && openstack router add subnet default-router tenant-subnet
+  when: tenant_subnet.rc != 0
+
+
+- name: find guest kernel
+  shell:  source /home/stack/overcloudrc && openstack image show overcloud-full-vmlinuz
+  ignore_errors: true
+  become: true
+  register: guest_kernel
 
 ## upload guest kernel, ramdisk and disk images
 #openstack image create --public --container-format aki --disk-format aki --file overcloud-full.vmlinuz overcloud-full-vmlinuz
 - name: upload guest kernel
-  shell: source /home/stack/overcloudrc && openstack image create --public --container-format aki --disk-format aki --file overcloud-full.vmlinuz overcloud-full-vmlinuz
+  shell: source /home/stack/overcloudrc && openstack image create --public --container-format aki --disk-format aki --file /home/stack/overcloud-full.vmlinuz overcloud-full-vmlinuz
+  when: guest_kernel.rc != 0
+
+- name: find guest ramdisk
+  shell:  source /home/stack/overcloudrc && openstack image show overcloud-full-initrd
+  ignore_errors: true
+  become: true
+  register: guest_ramdisk
 
 #openstack image create --public --container-format aki --disk-format aki --file overcloud-full.initrd overcloud-full-initrd
 - name: upload guest ramdisk
-  shell: source /home/stack/overcloudrc && openstack image create --public --container-format aki --disk-format aki --file overcloud-full.initrd overcloud-full-initrd
+  shell: source /home/stack/overcloudrc && openstack image create --public --container-format aki --disk-format aki --file /home/stack/overcloud-full.initrd overcloud-full-initrd
+  when: guest_ramdisk.rc != 0
+
+- name: find guest image
+  shell:  source /home/stack/overcloudrc && openstack image show overcloud-full
+  ignore_errors: true
+  become: true
+  register: guest_image
 
 #openstack image create --file overcloud-full.qcow2 --public --container-format bare --disk-format qcow2 --property kernel_id=`openstack image list |awk '/overcloud-full-vmlinuz/ {print $2}'` --property ramdisk_id=`openstack image list |awk '/overcloud-full-initrd/ {print $2}'` overcloud-full
 - name: upload guest image
-  shell: source /home/stack/overcloudrc && openstack image create --file overcloud-full.qcow2 --public --container-format bare --disk-format qcow2 --property kernel_id=`openstack image list |awk '/overcloud-full-vmlinuz/ {print $2}'` --property ramdisk_id=`openstack image list |awk '/overcloud-full-initrd/ {print $2}'` overcloud-full
+  shell: source /home/stack/overcloudrc && openstack image create --file /home/stack/overcloud-full.qcow2 --public --container-format bare --disk-format qcow2 --property kernel_id=`openstack image list |awk '/overcloud-full-vmlinuz/ {print $2}'` --property ramdisk_id=`openstack image list |awk '/overcloud-full-initrd/ {print $2}'` overcloud-full
+  when: guest_image.rc != 0
 
 #openstack server create --image overcloud-full --flavor baremetal --nic net-id=$(openstack network show tenant-net -f value -c id) instance1
 - name: deploy guest
