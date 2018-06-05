@@ -34,7 +34,7 @@
 #[ml2_type_vlan]
 #network_vlan_ranges=datacentre:500:525,tenant:300:399
 - name: set neutron network_vlan_ranges
-  command: crudini --set /etc/neutron/plugin.ini ml2_type_vlan network_vlan_ranges datacentre:500:525,provisioning:600:625
+  command: crudini --set /etc/neutron/plugin.ini ml2_type_vlan network_vlan_ranges datacentre:500:525,tenant:300:399
   become: true
 
 #[ml2_type_flat]
