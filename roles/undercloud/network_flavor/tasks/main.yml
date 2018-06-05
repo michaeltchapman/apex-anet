@@ -29,7 +29,7 @@
 
 ## Provisioning flavor configuration
 - name: find baremetal flavor
-  shell: source /home/stack/overcloudrc && openstack flavor list | grep provisioning
+  shell: source /home/stack/overcloudrc && openstack flavor list | grep baremetal
   ignore_errors: true
   become: true
   register: baremetal_flavor
