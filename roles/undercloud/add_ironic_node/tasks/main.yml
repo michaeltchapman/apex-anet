@@ -41,15 +41,21 @@
 #     --driver-info deploy_ramdisk=bm-deploy-ramdisk
 
 - name: find baremetal node list
-  shell: source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm | cut -d '|' -f 2 | tr -d '[:space:]'
+  shell: source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm
   ignore_errors: true
-  register: ironic_bm_uuid
+  register: ironic_bm_exists
   become: true
 
 - name: create baremetal node
   shell: source /home/stack/overcloudrc && openstack baremetal node create --name ironic_bm --driver ipmi --driver-info ipmi_address=192.168.122.1 --driver-info ipmi_port=6232 --driver-info ipmi_username=admin --driver-info ipmi_password=password --driver-info deploy_kernel=bm-deploy-kernel --driver-info deploy_ramdisk=bm-deploy-ramdisk | grep ' uuid ' | cut -d '|' -f 3 | tr -d '[:space:]'
   become: true
+  when: ironic_bm_exists.rc != 0
+
+- name: find baremetal node uuid
+  shell: source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm | cut -d '|' -f 2 | tr -d '[:space:]'
+  ignore_errors: true
   register: ironic_bm_uuid
+  become: true
 
 #openstack baremetal port create 52:54:00:24:ec:61 --node 5dd9c525-d7b7-4985-9c93-000c42751a0c \
 #    --local-link-connection switch_id=00:00:00:00:00:00 \
