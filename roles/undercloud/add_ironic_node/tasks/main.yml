@@ -17,6 +17,10 @@
   become: true
   when: bm_ramdisk.rc != 0
 
+- name: find ramdisk uuid
+  shell: source /home/stack/overcloudrc && openstack image list | grep bm-deploy-ramdisk | cut -d '|' -f 2 | tr -d '[:space:]'
+  register: bm_ramdisk_uuid
+  become: true
 
 - name: find kernel
   shell: source /home/stack/overcloudrc && openstack image list | grep bm-deploy-kernel
@@ -31,6 +35,11 @@
     chdir: /home/stack
   become: true
   when: bm_kernel.rc != 0
+
+- name: find kernel uuid
+  shell: source /home/stack/overcloudrc && openstack image list | grep bm-deploy-kernel | cut -d '|' -f 2 | tr -d '[:space:]'
+  register: bm_kernel_uuid
+  become: true
 
 #openstack baremetal node create --name baremetal3 --driver ipmi \
 #     --driver-info ipmi_address=192.168.122.1 \
@@ -47,13 +56,12 @@
   become: true
 
 - name: create baremetal node
-  shell: source /home/stack/overcloudrc && openstack baremetal node create --name ironic_bm --driver ipmi --driver-info ipmi_address=192.168.122.1 --driver-info ipmi_port=6232 --driver-info ipmi_username=admin --driver-info ipmi_password=password --driver-info deploy_kernel=bm-deploy-kernel --driver-info deploy_ramdisk=bm-deploy-ramdisk | grep ' uuid ' | cut -d '|' -f 3 | tr -d '[:space:]'
+  shell: "source /home/stack/overcloudrc && openstack baremetal node create --name ironic_bm --driver ipmi --driver-info ipmi_address=192.168.122.1 --driver-info ipmi_port=6232 --driver-info ipmi_username=admin --driver-info ipmi_password=password --driver-info deploy_kernel={{ bm_kernel_uuid.stdout }} --driver-info deploy_ramdisk={{ bm_ramdisk_uuid.stdout }}"
   become: true
   when: ironic_bm_exists.rc != 0
 
 - name: find baremetal node uuid
   shell: source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm | cut -d '|' -f 2 | tr -d '[:space:]'
-  ignore_errors: true
   register: ironic_bm_uuid
   become: true
 
