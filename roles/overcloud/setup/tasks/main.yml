@@ -51,10 +51,6 @@
 - name: set ansible_network_os
   command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_network junos
   become: true
-#ansible_connection=netconf
-- name: set ansible_connection
-  command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_connection netconf
-  become: true
 #ansible_host=192.0.2.250
 - name: set ansible_host
   command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_host 192.168.2.250
