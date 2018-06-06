@@ -22,7 +22,7 @@
 
 #openstack subnet create --network provisioning --subnet-range 192.0.2.0/24 --gateway 192.0.2.1 --allocation-pool start=192.0.2.100,end=192.0.2.200 provisioning-subnet
 - name: create provisioning subnet
-  shell: source /home/stack/overcloudrc && openstack subnet create --network provisioning --subnet-range 192.0.2.0/24 --gateway 192.0.2.1 --allocation-pool start=192.0.2.100,end=192.0.2.200 provisioning-subnet
+  shell: source /home/stack/overcloudrc && openstack subnet create --network provisioning --subnet-range 192.168.2.0/24 --gateway 192.168.2.1 --allocation-pool start=192.168.2.100,end=192.168.2.200 provisioning-subnet
   become: true
   when: provisioning_subnet.rc != 0
 

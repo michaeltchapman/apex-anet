@@ -38,7 +38,7 @@
 
 #openstack subnet create --network tenant-net --subnet-range 192.0.3.0/24     --allocation-pool start=192.0.3.10,end=192.0.3.20 tenant-subnet
 - name: create tenant subnet
-  shell: source /home/stack/overcloudrc && openstack subnet create --network tenant-net --subnet-range 192.0.3.0/24     --allocation-pool start=192.0.3.10,end=192.0.3.20 tenant-subnet
+  shell: source /home/stack/overcloudrc && openstack subnet create --network tenant-net --subnet-range 192.168.3.0/24     --allocation-pool start=192.168.3.10,end=192.168.3.20 tenant-subnet
   when: tenant_subnet.rc != 0
 
 #openstack router add subnet default-router tenant-subnet

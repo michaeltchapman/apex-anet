@@ -57,7 +57,7 @@
   become: true
 #ansible_host=192.0.2.250
 - name: set ansible_host
-  command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_host 192.0.2.250
+  command: crudini --set /etc/neutron/plugin.ini  ansible:testhost ansible_host 192.168.2.250
   become: true
 #ansible_user=ansible
 - name: set ansible_user
@@ -185,6 +185,6 @@
 # On the controller to give it a route to the hypervisor to control the VM nodes
 #ip r a 192.168.122.0/24 via 192.0.2.1
 - name: Give controller a route to the hyervisor
-  command: ip r a 192.168.122.0/24 via 192.0.2.1
+  command: ip r a 192.168.122.0/24 via 192.168.2.1
   become: true
   ignore_errors: true
