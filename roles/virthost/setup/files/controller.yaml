@@ -98,13 +98,13 @@ resources:
                      name: eth0
                      # force the MAC address of the bridge to this interface
                      primary: true
-                 addresses:
-                   -
-                     ip_netmask:
-                       list_join:
-                         - '/'
-                         - - {get_param: ControlPlaneIp}
-                           - {get_param: ControlPlaneSubnetCidr}
+                     addresses:
+                     -
+                       ip_netmask:
+                         list_join:
+                           - '/'
+                           - - {get_param: ControlPlaneIp}
+                             - {get_param: ControlPlaneSubnetCidr}
                  routes:
                    -
                      ip_netmask: 169.254.169.254/32
@@ -119,9 +119,8 @@ resources:
                     name: eth1
                     # force the MAC address of the bridge to this interface
                     primary: true
-                addresses:
-                  -
-                    ip_netmask: {get_param: TenantIpSubnet}
+                    addresses:
+                    - ip_netmask: {get_param: TenantIpSubnet}
               -
                 type: ovs_bridge
                 name: br-ex
@@ -134,8 +133,8 @@ resources:
                     primary: true
                 dns_servers: {get_param: DnsServers}
                 addresses:
-                  -
-                    ip_netmask: {get_param: ExternalIpSubnet}
+                -
+                  ip_netmask: {get_param: ExternalIpSubnet}
                 routes:
                   -
                     default: true
@@ -146,8 +145,8 @@ resources:
                 name: eth3
                 use_dhcp: false
                 addresses:
-                  -
-                    ip_netmask: {get_param: StorageIpSubnet}
+                -
+                  ip_netmask: {get_param: StorageIpSubnet}
 
 outputs:
   OS::stack_id:
