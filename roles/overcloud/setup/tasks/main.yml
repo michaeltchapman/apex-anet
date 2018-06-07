@@ -22,7 +22,7 @@
 #tenant_network_types = vlan
 
 - name: set neutron mechanism_drivers
-  command: crudini --set /etc/neutron/plugin.ini  ml2 mechanism_drivers ansible
+  command: crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers openvswitch,ansible
   become: true
 - name: set neutron tenant_network_types
   command: crudini --set /etc/neutron/plugin.ini ml2 tenant_network_types vlan
