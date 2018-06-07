@@ -60,6 +60,17 @@
   become: true
   when: ironic_bm_exists.rc != 0
 
+- name: find baremetal capabilities
+  shell: source /home/stack/overcloudrc && openstack baremetal node show ironic_bm | grep boot_option:local,profile:baremetal
+  register: ironic_bm_capabilities
+  become: true
+
+# (michapma) not sure of the openstack command equivalent
+- name: add baremetal capabilities
+  shell: source /home/stack/overcloudrc && ironic node-update ironic_bm add properties/capabilities='boot_option:local,profile:baremetal'
+  become: true
+  when: ironic_bm_capabilities.rc != 0
+
 - name: find baremetal node uuid
   shell: source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm | cut -d '|' -f 2 | tr -d '[:space:]'
   register: ironic_bm_uuid

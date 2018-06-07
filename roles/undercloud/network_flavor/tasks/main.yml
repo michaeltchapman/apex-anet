@@ -51,7 +51,7 @@
   when: baremetal_flavor.rc != 0
 #openstack flavor set  VCPU
 - name: set flavor vcpu
-  shell: source /home/stack/overcloudrc && openstack flavor set baremetal --property resources:VCPU=1
+  shell: source /home/stack/overcloudrc && openstack flavor set baremetal --property resources:VCPU=0
   become: true
   when: baremetal_flavor.rc != 0
 #openstack flavor set baremetal --property resources:MEMORY_MB=0
@@ -88,6 +88,18 @@
   shell: source /home/stack/overcloudrc && openstack aggregate create --property baremetal=false virtual-hosts
   become: true
   when: virtual_aggregate.rc != 0
+
+- name: find controller in baremetal aggregate
+  shell: source /home/stack/overcloudrc && openstack aggregate show baremetal-hosts | grep overcloud-controller
+  ignore_errors: true
+  become: true
+  register: controller_aggregate
+
+# openstack aggregate add host baremetal-hosts overcloud-controller-0.opnfvlf.org
+- name: add controller to baremetal aggregate
+  shell: source /home/stack/overcloudrc && openstack aggregate add host baremetal-hosts overcloud-controller-0.opnfvlf.org
+  become: true
+  when: controller_aggregate.rc != 0
 
 #openstack flavor set baremetal --property baremetal=true
 - name: set baremetal property in flavor
