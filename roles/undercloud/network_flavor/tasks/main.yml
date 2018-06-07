@@ -10,7 +10,7 @@
   register: provisioning_network
 
 - name: create provisioning network
-  shell: source /home/stack/overcloudrc && openstack network create --provider-network-type flat --provider-physical-network provisioning provisioning
+  shell: source /home/stack/overcloudrc && openstack network create --external --share --provider-network-type flat --provider-physical-network provisioning provisioning
   become: true
   when: provisioning_network.rc != 0
 
