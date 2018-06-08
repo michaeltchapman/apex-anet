@@ -4,6 +4,9 @@
   debug:
     msg: Configure overcloud controller for networking-ansible
 
+- name: enable neutron debug 
+  command: crudini --set /etc/neutron/neutron.conf DEFAULT debug true 
+  become: true
 
 #Once deployed make sure the neutron configs are updated to define that mapping:
 #
