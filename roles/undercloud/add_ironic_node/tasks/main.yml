@@ -63,6 +63,7 @@
 - name: find baremetal capabilities
   shell: source /home/stack/overcloudrc && openstack baremetal node show ironic_bm | grep boot_option:local,profile:baremetal
   register: ironic_bm_capabilities
+  ignore_errors: true
   become: true
 
 # (michapma) not sure of the openstack command equivalent
