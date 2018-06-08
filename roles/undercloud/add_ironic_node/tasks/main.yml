@@ -93,6 +93,11 @@
   become: true
   when: ironic_bm_port.rc != 0
 
+- name: set resource class
+  shell: source /home/stack/overcloudrc && openstack baremetal node set --resource-class baremetal ironic_bm
+  become: true
+  ignore_errors: true
+
 - name: manage ironic node
   shell: "source /home/stack/overcloudrc && openstack baremetal node list | grep ironic_bm | grep enroll"
   register: ironic_bm_manage
