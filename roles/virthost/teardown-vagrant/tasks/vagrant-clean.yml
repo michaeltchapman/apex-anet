@@ -1,0 +1,5 @@
+- name: clean vagrant
+  shell: "vagrant destroy -f"
+  args:
+    chdir: "{{ vagrant_working_dir }}"
+  ignore_errors: true

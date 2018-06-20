@@ -1,0 +1,111 @@
+---
+- name: Install vagrant
+  yum:
+    name: https://releases.hashicorp.com/vagrant/2.1.1/vagrant_2.1.1_x86_64.rpm
+    state: present
+  become: yes
+
+- name: Install vagrant-libvirt dependencies
+  yum: name={{item}} state=installed
+  with_items:
+       - qemu
+       - libvirt
+       - libvirt-devel
+       - ruby-devel
+       - gcc
+       - expect
+       - qemu-kvm
+       - libxslt-devel
+       - libxml2-devel
+       - libvirt-devel
+       - libguestfs-tools-c
+  become: yes
+
+- name: make working dir
+  file:
+    path: "{{ vagrant_working_dir }}"
+    state: directory
+
+- name: create vagrant file
+  template:
+    dest: "{{ vagrant_working_dir }}/Vagrantfile"
+    src: Vagrantfile.j2
+
+# expect ansible requires a newer version
+- name: Install pexpect from pip
+  pip:
+    name: pexpect
+
+- name: Check vagrant-libvirt is installed
+  shell: "vagrant plugin list | grep vagrant-libvirt"
+  register: vagrant_libvirt
+  ignore_errors: true
+
+- name: Install vagrant-libvirt
+  command: "vagrant plugin install vagrant-libvirt"
+  when: vagrant_libvirt.rc != 0
+
+- name: make vagrant image directory
+  file:
+    path: "{{ vagrant_working_dir }}/vagrant-boxes"
+    state: directory
+
+- name: Check if junos box already loaded
+  shell: "vagrant box list | grep junos"
+  register: vagrant_junos_box
+  ignore_errors: true
+
+- name: Check if vqfx10k-pfe box already loaded
+  shell: "vagrant box list | grep vqfx10k-pfe"
+  register: vagrant_vqfxpfe_box
+  ignore_errors: true
+
+- name: Check if there's already a vqfx10-pfe image available
+  stat:
+    path: "{{ vagrant_working_dir }}/vagrant-boxes/vqfx10k-pfe.box"
+  register: vqfxpfe
+  when: vagrant_junos_box.rc != 0
+
+- name: Check if there's already a junos image available
+  stat:
+    path: "{{ vagrant_working_dir }}/vagrant-boxes/junos.box"
+  register: junos
+  when: vagrant_vqfxpfe_box.rc != 0
+
+- name: Download junos box
+  get_url:
+    url: "{{ vagrant_box_source }}/junos.box"
+    dest: "{{ vagrant_working_dir }}/vagrant-boxes/junos.box"
+  when: vagrant_junos_box.rc != 0 and junos.stat.exists == False
+
+- name: Download vqfx10k-pfe box
+  get_url:
+    url: "{{ vagrant_box_source }}/vqfx10k-pfe.box"
+    dest: "{{ vagrant_working_dir }}/vagrant-boxes/vqfx10k-pfe.box"
+  when: vagrant_vqfxpfe_box.rc != 0 and vqfxpfe.stat.exists == False
+
+- name: Add Junos box
+  command: "vagrant box add {{ vagrant_working_dir }}/vagrant-boxes/junos.box --name junos"
+  when: vagrant_junos_box.rc != 0
+
+- name: Add vqfx10k-pfe box
+  command: "vagrant box add {{ vagrant_working_dir }}/vagrant-boxes/vqfx10k-pfe.box --name vqfx10k-pfe"
+  when: vagrant_vqfxpfe_box.rc != 0
+
+- shell: cat /sys/module/kvm_intel/parameters/nested || true
+  register: nested_result
+
+- name: reload kvm_intel
+  block:
+    - lineinfile:
+        path: /etc/modprobe.d/kvm_intel.conf
+        line: 'options kvm-intel nested=1'
+        create: yes
+    - modprobe:
+        name: kvm_intel
+        state: absent
+    - modprobe:
+        name: kvm_intel
+        state: present
+  when:
+    - "'Y' not in nested_result.stdout"

@@ -1,0 +1,4 @@
+---
+- name: Clean Apex VMs
+  include_tasks: apex-clean.yml
+  when: clean_apex_vms

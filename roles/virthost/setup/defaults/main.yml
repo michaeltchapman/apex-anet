@@ -1,6 +1,7 @@
 working_dir: "/root/apex-anet"
 apex_repo: "https://github.com/radez/apex"
 apex_repo_version: master
+
 clean_images: false
 force_image_build: false
 vagrant_box_source: "http://10.8.125.119/vagrant"

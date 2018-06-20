@@ -1,0 +1,3 @@
+---
+- name: Clean Vagrant VMs
+  include_tasks: vagrant-clean.yml

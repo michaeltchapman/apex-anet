@@ -1,0 +1,8 @@
+---
+- name: Install vagrant dependencies
+  include_tasks: vagrant-deps.yml
+  become: true
+
+- name: Deploy virtual switches
+  include_tasks: vagrant-deploy.yml
+  become: true

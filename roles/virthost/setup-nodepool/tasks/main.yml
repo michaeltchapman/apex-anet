@@ -1,0 +1,13 @@
+---
+
+- name: Create nodepool script
+  template:
+    src: master-repro.sh.j2
+    dest: /tmp/master-repro.sh
+    owner: oooq 
+    group: oooq
+    mode: "u=rwx,g=rwx,o=r"
+
+- name: Run nodepool script
+  shell: "bash -x /tmp/master-repro.sh"
+  
