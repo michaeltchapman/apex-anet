@@ -1,4 +1,9 @@
 ---
+- name: Search for existing deployment
+  shell: virsh list --all | grep subnode
+  register: nodepool_exist
+  ignore_errors: true
+  become: true
 
 - name: Create nodepool script
   template:
@@ -18,4 +23,4 @@
 
 - name: Run nodepool script
   shell: "/tmp/master-repro.sh -l -e @/tmp/repro-params.yaml"
-
+  when: nodepool_exist.rc != 0
