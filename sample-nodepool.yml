@@ -21,7 +21,7 @@
 - hosts: undercloud
   roles:
     # If there is no overcloud, redeploy it
-    - undercloud/deploy_overcloud
+    #- undercloud/deploy_overcloud
 
     # Register overcloud to inventory
     - undercloud/setup

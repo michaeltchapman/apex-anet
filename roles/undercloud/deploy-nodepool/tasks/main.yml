@@ -1,0 +1,5 @@
+---
+- name: run deploy script
+  shell: "cd /home/zuul && source env_vars_to_src.sh && /opt/stack/tripleo-ci/toci_gate_test-oooq.sh >> console.log 2>&1"
+  become: true
+  
