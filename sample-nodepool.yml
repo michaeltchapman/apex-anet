@@ -14,11 +14,11 @@
     #- virthost/teardown-vagrant
     #- virthost/teardown-apex
     - virthost/setup-vagrant
-    - virthost/setup-apex
+    - virthost/setup-nodepool
     # start from here if re-using an existing deployment
-    - virthost/post-deploy-apex
+    - virthost/post-deploy-nodepool
 
-- hosts: undercloud 
+- hosts: undercloud
   roles:
     # If there is no overcloud, redeploy it
     - undercloud/deploy_overcloud
@@ -27,7 +27,7 @@
     - undercloud/setup
 
   # configure overcloud controllers for networking-ansible
-- hosts: overcloud_controllers 
+- hosts: overcloud_controllers
   roles:
     - overcloud/setup
 
@@ -35,19 +35,19 @@
 - hosts: undercloud
   roles:
     - undercloud/network_flavor
- 
+
   # create new baremetal node
-- hosts: localhost 
+- hosts: localhost
   connection: local
   roles:
     - virthost/add_ironic_node
- 
+
   # add new baremetal node to overcloud ironic
-- hosts: undercloud 
+- hosts: undercloud
   roles:
     - undercloud/add_ironic_node
- 
+
   # deploy to new baremetal node
-- hosts: undercloud 
+- hosts: undercloud
   roles:
     - undercloud/deploy_ironic_node

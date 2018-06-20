@@ -1,0 +1,11 @@
+---
+- name: get undercloud ip
+  shell: "arp -an | grep $(virsh domiflist subnode-0 | grep default | cut -d ' ' -f 21) | cut -d '(' -f 2 | cut -d ')' -f 1"
+  register: undercloud_ip
+
+# register the undercloud as a new node in the inventory
+- name: add undercloud to inventory
+  add_host:
+    name: undercloud
+    ansible_host: "{{ undercloud_ip.stdout }}"
+    groups: undercloud
