@@ -1,0 +1,10 @@
+---
+- name: Destroy subnode 0
+  command: virsh destroy subnode-0
+  become: true
+  ignore_errors: true
+
+- name: Destroy subnode 1
+  command: virsh destroy subnode-1
+  become: true
+  ignore_errors: true

@@ -12,7 +12,7 @@
   roles:
     - virthost/setup-common
     #- virthost/teardown-vagrant
-    #- virthost/teardown-apex
+    #- virthost/teardown-nodepool
     - virthost/setup-vagrant
     - virthost/setup-nodepool
     # start from here if re-using an existing deployment
