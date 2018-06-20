@@ -17,5 +17,5 @@
     mode: "u=rw,g=rw,o=r"
 
 - name: Run nodepool script
-  shell: "./tmp/master-repro.sh -l -e @/tmp/repro-params.yaml"
+  shell: "/tmp/master-repro.sh -l -e @/tmp/repro-params.yaml"
 

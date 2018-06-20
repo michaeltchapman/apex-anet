@@ -1,6 +1,6 @@
 ---
 - name: get undercloud ip
-  shell: "arp -an | grep $(virsh domiflist subnode-0 | grep default | cut -d ' ' -f 21) | cut -d '(' -f 2 | cut -d ')' -f 1"
+  shell: "arp -an | grep $(sudo virsh domiflist subnode-0 | grep vnet3 | cut -d ' ' -f 23) | cut -d '(' -f 2 | cut -d ')' -f 1"
   register: undercloud_ip
 
 # register the undercloud as a new node in the inventory
