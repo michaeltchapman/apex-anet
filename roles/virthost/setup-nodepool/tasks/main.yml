@@ -4,10 +4,18 @@
   template:
     src: master-repro.sh.j2
     dest: /tmp/master-repro.sh
-    owner: oooq 
+    owner: oooq
     group: oooq
     mode: "u=rwx,g=rwx,o=r"
 
+- name: Create params file
+  template:
+    src: params.yaml.j2
+    dest: /tmp/repro-params.yaml
+    owner: oooq
+    group: oooq
+    mode: "u=rw,g=rw,o=r"
+
 - name: Run nodepool script
-  shell: "bash -x /tmp/master-repro.sh"
-  
+  shell: "./tmp/master-repro.sh -l -e @/tmp/repro-params.yaml"
+
