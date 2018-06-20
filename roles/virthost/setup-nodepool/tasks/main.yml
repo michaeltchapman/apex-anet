@@ -1,6 +1,6 @@
 ---
 - name: Search for existing deployment
-  shell: virsh list --all | grep subnode
+  shell: virsh list --all | grep subnode | grep running
   register: nodepool_exist
   ignore_errors: true
   become: true

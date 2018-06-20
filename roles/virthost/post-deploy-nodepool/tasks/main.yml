@@ -8,4 +8,5 @@
   add_host:
     name: undercloud
     ansible_host: "{{ undercloud_ip.stdout }}"
+    ansible_user: zuul
     groups: undercloud
