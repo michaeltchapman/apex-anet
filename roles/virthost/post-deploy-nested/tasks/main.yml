@@ -11,20 +11,15 @@
   register: nested_identity_file
   become: true
 
-- name: get nested identity file
-  shell: "vagrant ssh-config > /tmp/nested_ssh"
-  chdir: "{{ nested_working_dir }}"
-  become: true
-
 - name: add root key to vagrant auth keys
   #shell: "ssh -c /tmp/nested_ssh 'echo {{ root_pub_key.stdout }} >> /home/vagrant/.ssh/authorized_keys'"
-  shell: "ssh-copy-id -i /root/.ssh/id_rsa.pub -o {{ nested_identity_file.stdout }} -o UserKnownHostsFile /dev/null -o StrictHostKeyChecking no -o PasswordAuthentication no {{ nested_ip.stdout }}"
+  shell: "ssh-copy-id -i /root/.ssh/id_rsa.pub -o {{ nested_identity_file.stdout }} -o UserKnownHostsFile /dev/null -o StrictHostKeyChecking no -o PasswordAuthentication no vagrant@{{ nested_ip.stdout }}"
   chdir: "{{ nested_working_dir }}"
   become: true
 
 - name: add user key to vagrant auth keys
   #shell: "ssh -c /tmp/nested_ssh 'echo {{ root_pub_key.stdout }} >> /home/vagrant/.ssh/authorized_keys'"
-  shell: "ssh-copy-id -i /home/{{ ansible_user }}/.ssh/id_rsa.pub -o {{ nested_identity_file.stdout }} -o UserKnownHostsFile /dev/null -o StrictHostKeyChecking no -o PasswordAuthentication no {{ nested_ip.stdout }}"
+  shell: "ssh-copy-id -i /home/{{ ansible_user }}/.ssh/id_rsa.pub -o {{ nested_identity_file.stdout }} -o UserKnownHostsFile /dev/null -o StrictHostKeyChecking no -o PasswordAuthentication no vagrant@{{ nested_ip.stdout }}"
   chdir: "{{ nested_working_dir }}"
 
 # register the undercloud as a new node in the inventory
