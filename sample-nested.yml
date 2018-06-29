@@ -1,0 +1,15 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    apex_repo: "https://github.com/michaeltchapman/apex"
+  # build images, boot virtual switches and deploy apex
+  roles:
+    - virthost/setup-common
+    - virthost/setup-nested
+    # start from here if re-using an existing deployment
+    - virthost/post-deploy-nested
+
+- hosts: nested 
+  roles:
+    - nested
