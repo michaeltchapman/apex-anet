@@ -6,7 +6,7 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-  config.define "nested_host" do |nested|
+  config.vm.define "nested_host" do |nested|
     nested.vm.box = "centos/7"
     nested.vm.provider :libvirt do |domain|
       domain.cpus = {{ nested_cpus }}

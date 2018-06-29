@@ -15,6 +15,7 @@
     owner: root
     group: root
     mode: "u=rw,g=rw,o=r"
+  become: yes
 
 - name: Find virtual switch host
   shell: "vagrant status nested_host | grep running"
@@ -22,6 +23,7 @@
     chdir: "{{ vagrant_working_dir }}"
   ignore_errors: true
   register: nested_status
+  become: yes
 
 - name: Deploy virtual switch host using vagrant
   shell: "vagrant up nested_host"
@@ -29,3 +31,4 @@
     chdir: "{{ vagrant_working_dir }}"
   ignore_errors: true
   when: nested_status.rc == 1
+  become: yes

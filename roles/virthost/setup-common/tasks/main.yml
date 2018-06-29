@@ -33,12 +33,12 @@
        - libxml2-devel
        - libvirt-devel
        - libguestfs-tools-c
-  become
+  become: yes
 
     # expect ansible requires a newer version
 - name: Install pexpect from pip
   pip:
-    name
+    name: pexpect
   become: yes
 
 - name: Check vagrant-libvirt is installed
