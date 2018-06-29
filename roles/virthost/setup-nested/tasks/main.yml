@@ -1,0 +1,31 @@
+---
+
+- name: create nested vm working dir
+  file:
+    path: "{{ nested_working_dir }}"
+    state: directory
+    owner: root
+    group: root
+  become: yes
+
+- name: create vagrantfile
+  template:
+    src: Vagrantfile.j2
+    dest: "{{ nested_working_dir }}/Vagrantfile"
+    owner: root
+    group: root
+    mode: "u=rw,g=rw,o=r"
+
+- name: Find virtual switch host
+  shell: "vagrant status nested_host | grep running"
+  args:
+    chdir: "{{ vagrant_working_dir }}"
+  ignore_errors: true
+  register: nested_status
+
+- name: Deploy virtual switch host using vagrant
+  shell: "vagrant up nested_host"
+  args:
+    chdir: "{{ vagrant_working_dir }}"
+  ignore_errors: true
+  when: nested_status.rc == 1
