@@ -20,7 +20,7 @@
 - name: Find virtual switch host
   shell: "vagrant status nested_host | grep running"
   args:
-    chdir: "{{ vagrant_working_dir }}"
+    chdir: "{{ nested_working_dir }}"
   ignore_errors: true
   register: nested_status
   become: yes
@@ -28,7 +28,6 @@
 - name: Deploy virtual switch host using vagrant
   shell: "vagrant up nested_host"
   args:
-    chdir: "{{ vagrant_working_dir }}"
-  ignore_errors: true
+    chdir: "{{ nested_working_dir }}"
   when: nested_status.rc == 1
   become: yes
