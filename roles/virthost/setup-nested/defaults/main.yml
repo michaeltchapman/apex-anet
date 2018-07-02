@@ -1,4 +1,4 @@
 ---
-nested_working_dir: /root/nested_host
+nested_working_dir: /home/nested_host
 nested_cpus: 4
 nested_memory: 8192

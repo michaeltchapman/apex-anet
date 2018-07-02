@@ -5,6 +5,13 @@
     state: directory
   become: true
 
+- name: Install epel and git
+  yum: name={{item}} state=installed
+  with_items:
+       - git
+       - epel-release
+  become: yes
+
 - name: Clone apex repo
   git:
     repo: "{{ apex_repo }}"
@@ -23,6 +30,9 @@
   yum: name={{item}} state=installed
   with_items:
        - qemu
+       - openvswitch
+       - python-pip
+       - libvirt
        - libvirt
        - libvirt-devel
        - ruby-devel
@@ -33,6 +43,13 @@
        - libxml2-devel
        - libvirt-devel
        - libguestfs-tools-c
+  become: yes
+
+- name: start base vm services
+  systemd: name={{item}} state=started
+  with_items:
+    - libvirtd
+    - openvswitch
   become: yes
 
     # expect ansible requires a newer version
@@ -69,3 +86,4 @@
         state: present
   when:
     - "'Y' not in nested_result.stdout"
+  become: yes
