@@ -7,6 +7,7 @@
 - name: Set default subnet to 123 instead of 122
   block:
     - shell: virsh net-destroy default
+      ignore_errors: true
     - template:
         src: nested_defaultnet.xml.j2
         dest: /tmp/nested_defaultnet.xml
