@@ -8,6 +8,8 @@
   block:
     - shell: virsh net-destroy default
       ignore_errors: true
+    - shell: virsh net-undefine default
+      ignore_errors: true
     - template:
         src: nested_defaultnet.xml.j2
         dest: /tmp/nested_defaultnet.xml
