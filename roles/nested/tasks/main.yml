@@ -1,16 +1,16 @@
 ---
 - name: check to see if the libvirt default network collides
-  shell: libvirt net-dumpxml default | grep 122
+  shell: virsh net-dumpxml default | grep 122
   register: libvirt_default_net
   become: true
 
-- name:
+- name: Set default subnet to 123 instead of 122
   block:
-    - shell: libvirt net-destroy default
+    - shell: virsh net-destroy default
     - template:
       src: nested_defaultnet.xml.j2
       dest: /tmp/nested_defaultnet.xml
-    - shell: libvirt net-define /tmp/nested_defaultnet.xml
-    - shell: libvirt net-start default
+    - shell: virsh net-define /tmp/nested_defaultnet.xml
+    - shell: virsh net-start default
   become: true
   when: libvirt_default_net.rc == 0
