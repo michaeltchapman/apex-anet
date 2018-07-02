@@ -8,8 +8,8 @@
   block:
     - shell: virsh net-destroy default
     - template:
-      src: nested_defaultnet.xml.j2
-      dest: /tmp/nested_defaultnet.xml
+        src: nested_defaultnet.xml.j2
+        dest: /tmp/nested_defaultnet.xml
     - shell: virsh net-define /tmp/nested_defaultnet.xml
     - shell: virsh net-start default
   become: true
