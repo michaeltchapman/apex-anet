@@ -12,6 +12,6 @@
 
 - hosts: nested 
   roles:
-    - nested
     - virthost/setup-common
+    - nested
     - virthost/setup-vagrant
