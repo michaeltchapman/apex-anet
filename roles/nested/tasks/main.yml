@@ -3,17 +3,3 @@
   shell: virsh net-dumpxml default | grep 122
   register: libvirt_default_net
   become: true
-
-- name: Set default subnet to 123 instead of 122
-  block:
-    - shell: virsh net-destroy default
-      ignore_errors: true
-    - shell: virsh net-undefine default
-      ignore_errors: true
-    - template:
-        src: nested_defaultnet.xml.j2
-        dest: /tmp/nested_defaultnet.xml
-    - shell: virsh net-define /tmp/nested_defaultnet.xml
-    - shell: virsh net-start default
-  become: true
-  when: libvirt_default_net.rc == 0

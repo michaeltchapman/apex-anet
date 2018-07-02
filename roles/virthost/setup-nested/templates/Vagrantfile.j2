@@ -11,6 +11,10 @@ Vagrant.configure("2") do |config|
     nested.vm.provider :libvirt do |domain|
       domain.cpus = {{ nested_cpus }}
       domain.memory = {{ nested_memory }}
+      domain.management_network_name = 'nestednet'
+      domain.management_network_address = '192.168.132.0/24'
+      domain.nester = true
+      domain.cpu_mode = "host-model"
     end
   end
 end
