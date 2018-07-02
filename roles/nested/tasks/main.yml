@@ -1,5 +1,1 @@
 ---
-- name: check to see if the libvirt default network collides
-  shell: virsh net-dumpxml default | grep 122
-  register: libvirt_default_net
-  become: true
