@@ -11,9 +11,9 @@
 : ${AUTORUN:=0}
 : ${TIMEOUT:=240}
 : ${LIBVIRT:=0}
-: ${TOCI_JOBTYPE:="multinode-1ctlr-featureset010"}
+: ${TOCI_JOBTYPE:="multinode-1ctlr-featureset044"}
 : ${NODES_FILE:="/config/nodes/1ctlr.yml"}
-#: ${ZUUL_CHANGES:="openstack/tripleo-quickstart:master:refs/changes/65/553465/9"}
+: ${ZUUL_CHANGES:="openstack/tripleo-heat-templates:master:refs/changes/61/485261/32^openstack/tripleo-quickstart:master:refs/changes/29/509829/11^openstack/tripleo-quickstart-extras:master:refs/changes/28/509728/28"}
 : ${EXTRA_PARAMS:=""}
 
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
@@ -191,8 +191,8 @@ cd $WORKSPACE
 rm -rf tripleo-quickstart tripleo-quickstart-extras
 
 # Clone quickstart and quickstart-extras
-git clone https://github.com/michaeltchapman/tripleo-quickstart
-git clone https://github.com/michaeltchapman/tripleo-quickstart-extras
+git clone https://github.com/openstack/tripleo-quickstart
+git clone https://github.com/openstack/tripleo-quickstart-extras
 
 # Set up a virtual env if requested
 if [ "$CREATE_VIRTUALENV" = "true" ]; then
@@ -258,14 +258,14 @@ ansible-playbook $WORKSPACE/tripleo-quickstart-extras/playbooks/nodepool-setup.y
 # Get ansible_host
 export $(awk '/subnode-0/ {print $2}' $WORKSPACE/$HOSTS_FILE)
 
-EXTRA_VARS="$EXTRA_VARS --extra-vars dlrn_hash_tag_newest=b56e65eac5e2dc1441f2c0666c89a29a56a9e325_f6466fc5 "
+EXTRA_VARS="$EXTRA_VARS --extra-vars dlrn_hash_tag_newest=9a4cbd2eb74e52ba317159d5d83cc6927e56c707_71f5cbc7 "
 
 # Create the env_vars_to_source file and copy it to the undercloud
 cat >"env_vars_to_src.sh" <<EOF
 export ZUUL_CHANGES="${ZUUL_CHANGES}"
 export NODES_FILE="${NODES_FILE}"
 export TOCI_JOBTYPE="${TOCI_JOBTYPE}"
-export EXTRA_VARS="\$EXTRA_VARS --extra-vars dlrn_hash_tag=d72753b36d1946b87bc109dd908eed18be1866d9_57605409 "
+export EXTRA_VARS="\$EXTRA_VARS --extra-vars dlrn_hash_tag=9f3a41c2c752bd68a84b6bd72add18e8bc6f4c76_f1a4ee5a --extra-vars @/home/zuul/repro-params.yaml"
 export REMAINING_TIME="$TIMEOUT"
 export PLAYBOOKS=$PLAYBOOKS
 EOF
@@ -282,6 +282,8 @@ EOF
 fi
 
 scp ${SSH_OPTS} "$WORKSPACE/env_vars_to_src.sh" zuul@$ansible_host:/home/zuul/
+scp ${SSH_OPTS} "/tmp/repro-params.yaml" zuul@$ansible_host:/home/zuul/
+
 if [[ "$AUTORUN" == "1" ]]; then
     ssh ${SSH_OPTS} zuul@$ansible_host -tt \
     "screen -LS ci -h 25000 -dm bash -c 'set -m; source ~/env_vars_to_src.sh; ANSIBLE_FORCE_COLOR=true /opt/stack/tripleo-ci/toci_gate_test-oooq.sh 2>&1 | tee ~/console.log; exec bash' && screen -RD"
@@ -302,4 +304,3 @@ else
         screen -S ci
     "
 fi
-
