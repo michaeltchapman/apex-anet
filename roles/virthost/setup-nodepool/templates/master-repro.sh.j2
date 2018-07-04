@@ -298,7 +298,7 @@ else
         ssh ${SSH_OPTS} zuul@$ansible_host
         # Source the environment settings file and run the toci gate script
         source /home/zuul/env_vars_to_src.sh
-        /opt/stack/tripleo-ci/toci_gate_test-oooq.sh 2>&1 | tee console.log
+        /opt/stack/tripleo-ci/toci_gate_test.sh 2>&1 | tee console.log
 
         # To avoid timeouts, you can start a screen session before executing the commands:
         screen -S ci
