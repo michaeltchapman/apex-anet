@@ -24,30 +24,4 @@
     #- undercloud/deploy_overcloud
 
     # Register overcloud to inventory
-    - undercloud/setup
-
-  # configure overcloud controllers for networking-ansible
-- hosts: overcloud_controllers
-  roles:
-    - overcloud/setup
-
-  # provision network and configure flavors
-- hosts: undercloud
-  roles:
-    - undercloud/network_flavor
-
-  # create new baremetal node
-- hosts: localhost
-  connection: local
-  roles:
-    - virthost/add_ironic_node
-
-  # add new baremetal node to overcloud ironic
-- hosts: undercloud
-  roles:
-    - undercloud/add_ironic_node
-
-  # deploy to new baremetal node
-- hosts: undercloud
-  roles:
-    - undercloud/deploy_ironic_node
+    - undercloud/deploy-nodepool
