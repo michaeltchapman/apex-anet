@@ -1,0 +1,5 @@
+---
+nodepool_changes:
+ - openstack/tripleo-heat-templates:master:refs/changes/61/485261/32
+ - openstack/tripleo-quickstart:master:refs/changes/29/509829/11
+ - openstack/tripleo-quickstart-extras:master:refs/changes/28/509728/28
