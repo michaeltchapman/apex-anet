@@ -9,4 +9,5 @@
     name: undercloud
     ansible_host: "{{ undercloud_ip.stdout }}"
     ansible_user: zuul
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
     groups: undercloud

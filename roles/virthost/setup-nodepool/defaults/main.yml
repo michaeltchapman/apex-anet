@@ -1,8 +1,8 @@
 ---
 nodepool_changes:
- - openstack/tripleo-heat-templates:master:refs/changes/61/485261/32
- - openstack/tripleo-quickstart:master:refs/changes/29/509829/11
- - openstack/tripleo-quickstart-extras:master:refs/changes/29/509728/28
+ - 'openstack/tripleo-heat-templates:master:refs/changes/61/485261/32'
+ - 'openstack/tripleo-quickstart:master:refs/changes/29/509829/11'
+ - 'openstack/tripleo-quickstart-extras:master:refs/changes/28/509728/30'
 
 nodepool_delorean_hash: 918143cf69e49c70f11c0a1940209c666e8d87f1_d425edec
 nodepool_delorean_hash_newest: "{{ nodepool_delorean_hash }}"
