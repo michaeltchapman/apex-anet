@@ -26,6 +26,7 @@ Vagrant.configure(2) do |config|
       domain.nic_model_type = "e1000"
       domain.disk_bus = 'ide'
       domain.cpus = 2
+      domain.cpu_model = 'host-passthrough'
       domain.memory = 2048
       domain.management_network_name = 'junipernet'
       domain.management_network_address = '192.168.142.0/24'
@@ -56,6 +57,7 @@ Vagrant.configure(2) do |config|
     vqfx.vm.provider :libvirt do |domain|
       domain.disk_bus = 'ide'
       domain.cpus = 2
+      domain.cpu_model = 'host-passthrough'
       domain.memory = 2048
       domain.management_network_name = 'junipernet'
       domain.management_network_address = '192.168.142.0/24'

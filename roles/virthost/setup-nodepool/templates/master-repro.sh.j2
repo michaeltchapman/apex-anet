@@ -266,7 +266,7 @@ cat >"env_vars_to_src.sh" <<EOF
 export ZUUL_CHANGES="${ZUUL_CHANGES}"
 export NODES_FILE="${NODES_FILE}"
 export TOCI_JOBTYPE="${TOCI_JOBTYPE}"
-export EXTRA_VARS="\$EXTRA_VARS --extra-vars dlrn_hash_tag={{ nodepool_delorean_hash }} --extra-vars @/home/zuul/repro-params.yaml"
+export EXTRA_VARS="\$EXTRA_VARS $EXTRA_VARS --extra-vars dlrn_hash_tag={{ nodepool_delorean_hash }} --extra-vars @/home/zuul/repro-params.yaml"
 export REMAINING_TIME="$TIMEOUT"
 export PLAYBOOKS=$PLAYBOOKS
 EOF

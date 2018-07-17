@@ -4,5 +4,5 @@ nodepool_changes:
  - 'openstack/tripleo-quickstart:master:refs/changes/29/509829/11'
  - 'openstack/tripleo-quickstart-extras:master:refs/changes/28/509728/30'
 
-nodepool_delorean_hash: 918143cf69e49c70f11c0a1940209c666e8d87f1_d425edec
-nodepool_delorean_hash_newest: "{{ nodepool_delorean_hash }}"
+nodepool_delorean_hash: 46f750edae74225a4dfbcce1f70990e1122a9613_815ab44a
+nodepool_delorean_hash_newest: 927c7c215ce130bca240f5ed077bd6d2771cf6e4_5feddecb
