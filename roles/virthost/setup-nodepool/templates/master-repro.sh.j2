@@ -11,7 +11,7 @@
 : ${AUTORUN:=0}
 : ${TIMEOUT:=240}
 : ${LIBVIRT:=0}
-: ${TOCI_JOBTYPE:="multinode-1ctlr-featureset044"}
+: ${TOCI_JOBTYPE:="multinode-1ctlr-featureset054"}
 : ${NODES_FILE:="/config/nodes/1ctlr.yml"}
 #: ${ZUUL_CHANGES:="openstack/tripleo-heat-templates:master:refs/changes/61/485261/32^openstack/tripleo-quickstart:master:refs/changes/29/509829/11^openstack/tripleo-quickstart-extras:master:refs/changes/28/509728/28"}
 : ${ZUUL_CHANGES:="{{ nodepool_changes | join('^') }}"}
@@ -287,12 +287,12 @@ scp ${SSH_OPTS} "/tmp/repro-params.yaml" zuul@$ansible_host:/home/zuul/
 
 if [[ "$AUTORUN" == "1" ]]; then
     ssh ${SSH_OPTS} zuul@$ansible_host -tt \
-    "screen -LS ci -h 25000 -dm bash -c 'set -m; source ~/env_vars_to_src.sh; ANSIBLE_FORCE_COLOR=true /opt/stack/tripleo-ci/toci_gate_test-oooq.sh 2>&1 | tee ~/console.log; exec bash' && screen -RD"
+    "screen -LS ci -h 25000 -dm bash -c 'set -m; source ~/env_vars_to_src.sh; ANSIBLE_FORCE_COLOR=true /opt/stack/tripleo-ci/toci_gate_test.sh 2>&1 | tee ~/console.log; exec bash' && screen -RD"
 else
     # Remove -x so that the instructions don't print twice
     set +x
 
-    # Instruct the user to execute toci_gate_test-oooq.sh on the undercloud
+    # Instruct the user to execute toci_gate_test.sh on the undercloud
     echo "
         # Now complete the test excution on the undercloud:
         # ssh to the undercloud:
