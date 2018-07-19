@@ -287,12 +287,12 @@ scp ${SSH_OPTS} "/tmp/repro-params.yaml" zuul@$ansible_host:/home/zuul/
 
 if [[ "$AUTORUN" == "1" ]]; then
     ssh ${SSH_OPTS} zuul@$ansible_host -tt \
-    "screen -LS ci -h 25000 -dm bash -c 'set -m; source ~/env_vars_to_src.sh; ANSIBLE_FORCE_COLOR=true /opt/stack/tripleo-ci/toci_gate_test-oooq.sh 2>&1 | tee ~/console.log; exec bash' && screen -RD"
+    "screen -LS ci -h 25000 -dm bash -c 'set -m; source ~/env_vars_to_src.sh; ANSIBLE_FORCE_COLOR=true /opt/stack/tripleo-ci/toci_gate_test.sh 2>&1 | tee ~/console.log; exec bash' && screen -RD"
 else
     # Remove -x so that the instructions don't print twice
     set +x
 
-    # Instruct the user to execute toci_gate_test-oooq.sh on the undercloud
+    # Instruct the user to execute toci_gate_test.sh on the undercloud
     echo "
         # Now complete the test excution on the undercloud:
         # ssh to the undercloud:
